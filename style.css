@@ -1,6 +1,6 @@
 /* ============================================================
    ตัวแปรหลัก - ธีมโฮโลแกรม (ปรับพื้นหลังการ์ดเป็น 225,255,255)
-   ปรับขนาดโดยรวมให้เล็กลง (Compact) + รองรับมือถือ/แท็บเล็ต
+   ปรับขนาดโดยรวมให้เล็กลง (Compact)
    ============================================================ */
 :root {
     /* สีนีออนหลักของธีม */
@@ -34,7 +34,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent; /* ลบ highlight บนมือถือ */
 }
 
 body {
@@ -51,11 +50,6 @@ body {
     position: relative;
     box-shadow: inset 0 0 100px rgba(255, 255, 255, 0.08);
     font-size: var(--font-size-base);
-    /* ✅ ปรับปรุงประสิทธิภาพบนมือถือ */
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
 body::after {
@@ -104,9 +98,6 @@ body::before {
     position: relative;
     z-index: 2;
     padding: 0 clamp(0.3rem, 1.2vw, 1rem);
-    /* ✅ iOS Safe Area */
-    padding-top: env(safe-area-inset-top, 0);
-    padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
 /* ============================================================
@@ -120,7 +111,6 @@ body::before {
     gap: clamp(0.2rem, 1vw, 0.6rem);
     background: rgba(225, 255, 255, 0.08);
     backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px); /* ✅ Safari */
     padding: clamp(0.25rem, 0.8vw, 0.6rem) clamp(0.4rem, 1.2vw, 0.9rem);
     border-radius: var(--radius-base);
     border: 1px solid rgba(225, 255, 255, 0.15);
@@ -231,7 +221,6 @@ body::before {
 .status-tag {
     background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
     padding: 0.15rem 0.5rem;
     border-radius: 30px;
     font-size: clamp(0.4rem, 0.9vw, 0.6rem);
@@ -264,7 +253,6 @@ body::before {
 .canvas-panel {
     background: var(--bg-card);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     border-radius: var(--radius-base);
     padding: clamp(0.2rem, 0.8vw, 0.6rem);
     border: 1px solid rgba(225, 255, 255, 0.12);
@@ -331,8 +319,6 @@ body::before {
     flex: 1;
     min-height: clamp(80px, 18vh, 200px);
     border: 1px solid rgba(225, 255, 255, 0.08);
-    /* ✅ ป้องกันการ scroll บนมือถือ */
-    touch-action: none;
 }
 
 .canvas-wrapper canvas {
@@ -344,9 +330,6 @@ body::before {
     cursor: crosshair;
     object-fit: contain;
     filter: drop-shadow(0 0 15px rgba(0, 243, 255, 0.08));
-    /* ✅ ปรับปรุงประสิทธิภาพ */
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
 }
 
 .drag-overlay {
@@ -354,7 +337,6 @@ body::before {
     inset: 0;
     background: rgba(0, 10, 30, 0.85);
     backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -393,7 +375,6 @@ body::before {
 .card {
     background: var(--bg-card);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(225, 255, 255, 0.15);
     border-radius: var(--radius-base);
     padding: clamp(0.3rem, 0.8vw, 0.6rem);
@@ -471,7 +452,6 @@ input[type="range"] {
     width: 100%;
     height: clamp(2px, 0.3vw, 4px);
     -webkit-appearance: none;
-    appearance: none;
     background: rgba(225, 255, 255, 0.12);
     border-radius: 8px;
     outline: none;
@@ -480,7 +460,6 @@ input[type="range"] {
 
 input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    appearance: none;
     width: clamp(12px, 2.5vw, 18px);
     height: clamp(12px, 2.5vw, 18px);
     background: radial-gradient(circle, var(--holo-cyan), var(--holo-purple));
@@ -513,7 +492,6 @@ select {
     width: 100%;
     background: rgba(0, 10, 30, 0.7);
     backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
     border: 1px solid rgba(225, 255, 255, 0.15);
     padding: clamp(0.2rem, 0.8vw, 0.5rem) clamp(0.3rem, 1vw, 0.6rem);
     border-radius: 30px;
@@ -524,8 +502,6 @@ select {
     font-size: clamp(0.5rem, 1.2vw, 0.7rem);
     transition: 0.2s;
     min-height: clamp(22px, 3vh, 32px);
-    /* ✅ ป้องกันการ zoom บน iOS */
-    font-size: 16px;
 }
 
 select:hover {
@@ -573,8 +549,6 @@ button {
     text-transform: uppercase;
     letter-spacing: 0.3px;
     font-family: var(--font-display);
-    /* ✅ ป้องกันการ zoom บน iOS */
-    touch-action: manipulation;
 }
 
 button.primary {
@@ -595,7 +569,6 @@ button.secondary {
     color: var(--holo-cyan);
     border: 1px solid rgba(225, 255, 255, 0.15);
     backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
 }
 button.secondary:hover {
     background: rgba(225, 255, 255, 0.08);
@@ -667,7 +640,6 @@ button.sci-fi-btn {
     width: clamp(32px, 5vw, 44px);
     height: clamp(32px, 5vw, 44px);
     flex: 0 0 auto;
-    touch-action: manipulation;
 }
 
 button.sci-fi-btn::before {
@@ -812,7 +784,6 @@ button.sci-fi-btn:active {
     right: clamp(0.3rem, 1.2vw, 0.8rem);
     background: rgba(5, 10, 20, 0.92);
     backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     padding: clamp(0.1rem, 0.6vw, 0.4rem) clamp(0.25rem, 1vw, 0.6rem);
     border-radius: clamp(0.5rem, 1.2vw, 0.9rem);
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(225, 255, 255, 0.03);
@@ -825,8 +796,6 @@ button.sci-fi-btn:active {
     font-size: clamp(0.5rem, 1.2vw, 0.7rem);
     flex-wrap: wrap;
     justify-content: center;
-    /* ✅ ป้องกันการชนกับ Safe Area */
-    margin-bottom: env(safe-area-inset-bottom, 0);
 }
 
 .floating-zoom.hidden {
@@ -866,7 +835,6 @@ button.sci-fi-btn:active {
     letter-spacing: 0;
     min-height: clamp(20px, 2.5vh, 28px);
     min-width: clamp(20px, 2.5vh, 28px);
-    touch-action: manipulation;
 }
 .floating-zoom button:hover {
     background: rgba(225, 255, 255, 0.08);
@@ -895,7 +863,8 @@ button.sci-fi-btn:active {
 }
 
 /* ============================================================
-   MAGIC OVERLAY (เวทมนตร์ลบพื้นหลัง)
+   ============================================================
+   MAGIC OVERLAY (เวทมนตร์ลบพื้นหลัง) - เพิ่มเติม
    ============================================================ */
 #magic-overlay {
     position: fixed;
@@ -905,7 +874,6 @@ button.sci-fi-btn:active {
     height: 100%;
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1011,6 +979,13 @@ button.sci-fi-btn:active {
     100% { opacity: 1; transform: scale(1.2); }
 }
 
+/* Magic Overlay Responsive */
+@media (max-width: 480px) {
+    .magic-circle { width: 120px; height: 120px; }
+    .magic-wand { font-size: 40px; }
+    .magic-text { font-size: 1rem; }
+}
+
 /* ============================================================
    prefers-reduced-motion (คงไว้)
    ============================================================ */
@@ -1041,227 +1016,8 @@ button.sci-fi-btn:active {
 }
 
 /* ============================================================
-   MEDIA QUERIES - มือถือและแท็บเล็ต (ปรับปรุงใหม่)
+   Media Query ขนาดเล็กมาก (ปรับเฉพาะกรณีที่จำเป็น)
    ============================================================ */
-
-/* -------- แท็บเล็ต (iPad, Android Tablet) -------- */
-@media (min-width: 768px) and (max-width: 1024px) {
-    .controls-panel {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.6rem;
-    }
-    .canvas-panel {
-        min-height: 35vh;
-    }
-    #ai-chat-widget {
-        width: 340px;
-        height: 460px;
-        right: 15px;
-        bottom: 15px;
-    }
-    .floating-zoom {
-        bottom: 15px;
-        right: 15px;
-    }
-}
-
-/* -------- มือถือขนาดกลาง (iPhone 12-14, Android) -------- */
-@media (max-width: 767px) {
-    .app-header {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.4rem;
-        padding: 0.4rem 0.6rem;
-    }
-    .logo-area {
-        min-width: unset;
-        justify-content: center;
-    }
-    .header-badges {
-        justify-content: center;
-    }
-    .controls-panel {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.4rem;
-    }
-    .canvas-panel {
-        min-height: 30vh;
-    }
-    #ai-chat-widget {
-        width: calc(100vw - 20px);
-        height: 50vh;
-        right: 10px;
-        bottom: 10px;
-        border-radius: 16px;
-    }
-    #ai-chat-header {
-        padding: 12px 16px;
-        font-size: 15px;
-        border-radius: 16px 16px 0 0;
-    }
-    #ai-chat-messages {
-        padding: 12px 14px 8px 14px;
-    }
-    #ai-chat-input-area {
-        padding: 10px 12px 14px 12px;
-        gap: 6px;
-    }
-    .floating-zoom {
-        bottom: 10px;
-        right: 10px;
-        padding: 0.2rem 0.5rem;
-    }
-    .floating-zoom .zoom-label {
-        display: none;
-    }
-    #videoGeneratorCard {
-        width: calc(100vw - 20px) !important;
-        left: 10px !important;
-        top: 60px !important;
-        max-width: 95vw !important;
-    }
-    #bgMenu {
-        min-width: 160px !important;
-        max-width: 85vw !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-    }
-    .magic-text {
-        font-size: 1rem !important;
-    }
-    .magic-circle {
-        width: 120px !important;
-        height: 120px !important;
-    }
-    .magic-wand {
-        font-size: 40px !important;
-    }
-}
-
-/* -------- มือถือเล็ก (iPhone SE, Android ขนาดเล็ก) -------- */
-@media (max-width: 480px) {
-    .controls-panel {
-        grid-template-columns: 1fr 1fr;
-        gap: 0.3rem;
-    }
-    .card {
-        padding: 0.3rem;
-    }
-    .card-title {
-        font-size: 0.5rem;
-    }
-    .slider-header {
-        font-size: 0.4rem;
-    }
-    button {
-        font-size: 0.45rem;
-        padding: 0.15rem 0.4rem;
-        min-height: 28px;
-        min-width: 28px;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-        width: 16px;
-        height: 16px;
-    }
-    .badge-pro span:not(.icon) {
-        display: none;
-    }
-    .status-tag span:not(.dot) {
-        display: none;
-    }
-    .logo-text p {
-        display: none;
-    }
-    .logo-icon {
-        font-size: 1.2rem;
-    }
-    .logo-text h1 {
-        font-size: 0.9rem;
-    }
-    #ai-chat-widget {
-        height: 45vh;
-    }
-    .btn-group .secondary.hide-mobile {
-        display: none;
-    }
-}
-
-/* -------- จอแนวนอน (Landscape) บนมือถือ -------- */
-@media (max-height: 500px) and (orientation: landscape) {
-    .app-header {
-        flex-direction: row;
-        flex-wrap: nowrap;
-        padding: 0.15rem 0.4rem;
-    }
-    .logo-text p {
-        display: none;
-    }
-    .logo-icon {
-        font-size: 1rem;
-    }
-    .logo-text h1 {
-        font-size: 0.7rem;
-    }
-    .badge-pro {
-        font-size: 0.4rem;
-        padding: 0.05rem 0.3rem;
-    }
-    .status-tag {
-        font-size: 0.4rem;
-        padding: 0.05rem 0.3rem;
-    }
-    .canvas-panel {
-        min-height: 80px;
-    }
-    .controls-panel {
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-        gap: 0.2rem;
-    }
-    .card {
-        padding: 0.1rem 0.2rem;
-    }
-    .card-title {
-        font-size: 0.4rem;
-        margin-bottom: 0.05rem;
-    }
-    .slider-header {
-        font-size: 0.35rem;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-        width: 10px;
-        height: 10px;
-    }
-    button {
-        font-size: 0.4rem;
-        padding: 0.05rem 0.2rem;
-        min-height: 18px;
-        min-width: 18px;
-    }
-    button.sci-fi-btn {
-        width: 26px;
-        height: 26px;
-    }
-    button.sci-fi-btn .icon {
-        font-size: 0.8rem;
-    }
-    #ai-chat-widget {
-        height: 40vh;
-        width: 280px;
-    }
-    #videoGeneratorCard {
-        width: 280px !important;
-        top: 50px !important;
-    }
-}
-
-/* -------- Magic Overlay Responsive (เพิ่ม) -------- */
-@media (max-width: 480px) {
-    .magic-circle { width: 120px; height: 120px; }
-    .magic-wand { font-size: 40px; }
-    .magic-text { font-size: 1rem; }
-}
-
 @media (max-width: 480px) {
     .logo-text p {
         display: none;
