@@ -2,6 +2,7 @@
 // script_combined_integrated.js — ตัวเริ่มต้นหลัก (Entry Point)
 // รวมทุกอย่าง: AI Chat Widget + ฉากหลัง + Video Generator + ควบคุม PixelForge
 // พร้อม Keyboard Shortcuts (ปุ่ม 0-9)
+// แก้ไขให้เข้ากับ script_commands.js เวอร์ชันใหม่ (ใช้ SYNONYMS และ Extra โดยตรง)
 // ================================================================
 
 (function() {
@@ -730,7 +731,7 @@
         let recognition = null;
         let isListening = false;
 
-        // ---- 5g. ฟังก์ชัน AI ส่งข้อความ ----
+        // ---- 5g. ฟังก์ชัน AI ส่งข้อความ (แก้ไขให้ใช้ getAIResponse แบบใหม่) ----
         async function sendMessage() {
             if (isProcessing) return;
             const text = inputField.value.trim();
@@ -745,7 +746,8 @@
 
             try {
                 const deps = { widget, header, sendBtn };
-                const reply = await commands.getAIResponse(text, synonyms, extra, deps);
+                // เรียก getAIResponse ด้วยพารามิเตอร์ (text, deps) เท่านั้น
+                const reply = await commands.getAIResponse(text, deps);
                 extra.removeThinking();
                 extra.addMessage(messagesContainer, reply, 'bot');
                 extra.speakText(reply, soundEnabled, speechSynth);
@@ -889,19 +891,14 @@
             }
         });
 
-        // ============================================================
-        // 5o. Keyboard Shortcuts (ปุ่มลัด 0-9) — ★ เพิ่มใหม่ ★
-        // ============================================================
+        // ---- 5o. Keyboard Shortcuts (ปุ่มลัด 0-9) ----
         function handleKeyboardShortcuts(e) {
-            // ป้องกันการทำงานถ้ากำลังพิมพ์ในช่องข้อความ
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-            // หยุดถ้ากำลังประมวลผล
             if (isProcessing) return;
 
             const key = e.key;
             let statusMsg = '';
 
-            // ฟังก์ชันช่วยแสดงสถานะสั้นๆ ที่แถบสถานะ
             function showStatus(text) {
                 const statusEl = document.getElementById('imageStatus');
                 if (statusEl) {
@@ -960,10 +957,9 @@
                     statusMsg = 'รีเซ็ตการปรับแต่ง';
                     break;
                 default:
-                    return; // ไม่มีคำสั่ง
+                    return;
             }
 
-            // แสดงสถานะสั้นๆ ที่แถบสถานะ (ถ้ามี)
             if (statusMsg) {
                 const statusEl = document.getElementById('imageStatus');
                 if (statusEl) {
@@ -975,8 +971,12 @@
             }
         }
 
-        // ผูก event listener สำหรับปุ่มลัด
         document.addEventListener('keydown', handleKeyboardShortcuts);
+
+        // ---- 5p. Cleanup เมื่อปิดหน้า ----
+        window.addEventListener('beforeunload', function() {
+            extra.cleanupGarbage();
+        });
 
         // ---- สรุปการโหลด ----
         console.log('✅ PixelForge Integrated System Ready!');
@@ -994,9 +994,7 @@
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initWidget);
     } else {
-        // DOM พร้อมแล้ว เรียกทันที
-        // แต่ต้องรอให้ script.js (PixelForge) โหลดเสร็จก่อน
-        // ใช้ setTimeout เพื่อให้ script.js มีโอกาสตั้งค่า DOM ก่อน
+        // หน่วงเวลาเล็กน้อยเพื่อให้ script.js (PixelForge) โหลดเสร็จ
         setTimeout(initWidget, 100);
     }
 

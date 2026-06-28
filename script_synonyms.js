@@ -1,4 +1,8 @@
-// script_synonyms.js
+// ================================================================
+// script_synonyms.js — คำพ้องความหมายสำหรับคำสั่งเสียง/ข้อความ
+// ใช้ร่วมกับ script_extra.js, script_commands.js, script_combined_integrated.js
+// ================================================================
+
 (function() {
     'use strict';
     window.SYNONYMS = {
@@ -56,6 +60,13 @@
         add_image: ['เพิ่มภาพ', 'เลือกรูป', 'เพิ่มรูป', 'add image', 'select image'],
         add_audio: ['เพิ่มเสียง', 'เลือกเสียง', 'add audio', 'select audio'],
         clear_image: ['ลบภาพ', 'clear image', 'remove image'],
-        clear_audio: ['ลบเสียง', 'clear audio', 'remove audio']
+        clear_audio: ['ลบเสียง', 'clear audio', 'remove audio'],
+
+        // ===== เพิ่มเติม (เผื่ออนาคต) =====
+        reset_all: ['รีเซ็ตทั้งหมด', 'reset everything', 'reset all'],
+        show_menu: ['แสดงเมนู', 'show menu', 'เปิดเมนู'],
+        hide_menu: ['ซ่อนเมนู', 'hide menu', 'ปิดเมนู']
     };
+
+    console.log('✅ SYNONYMS loaded.');
 })();

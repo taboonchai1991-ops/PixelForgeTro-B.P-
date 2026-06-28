@@ -1,6 +1,7 @@
 // ================================================================
 // script_commands.js — ตรรกะ AI ขั้นสูง (ซับซ้อน)
 // รองรับ: จำชื่อ, คำนวณ, สภาพอากาศจำลอง, บริบท, คำสั่งครบ
+// ใช้ window.SYNONYMS และ window.Extra โดยตรง
 // ================================================================
 
 (function() {
@@ -17,7 +18,6 @@
     // ===== ฟังก์ชันอัปเดต Context =====
     function updateContext(key, value) {
         conversationContext[key] = value;
-        // จำกัดประวัติไม่ให้ยาวเกินไป
         if (conversationContext.history.length > 10) {
             conversationContext.history.shift();
         }
@@ -26,18 +26,20 @@
     window.Commands = {
         /**
          * ฟังก์ชันหลัก AI (ปรับปรุงให้ซับซ้อนขึ้น)
+         * @param {string} userMessage - ข้อความที่ผู้ใช้พิมพ์/พูด
+         * @param {object} deps - { widget, header, sendBtn } สำหรับ UI
          */
-        getAIResponse: function(userMessage, synonyms, extra, deps) {
+        getAIResponse: function(userMessage, deps) {
             return new Promise(async (resolve) => {
                 const delay = 600 + Math.random() * 1000;
                 setTimeout(async () => {
                     const msg = userMessage.trim().toLowerCase();
                     let reply = '';
 
-                    // ฟังก์ชันตรวจสอบคำในหมวดหมู่
+                    // ฟังก์ชันตรวจสอบคำในหมวดหมู่ (ใช้ window.SYNONYMS)
                     const check = (category) => {
-                        if (!synonyms[category]) return false;
-                        return synonyms[category].some(word => msg.includes(word));
+                        if (!window.SYNONYMS || !window.SYNONYMS[category]) return false;
+                        return window.SYNONYMS[category].some(word => msg.includes(word));
                     };
 
                     // ==========================================================
@@ -127,38 +129,38 @@
                     // 8. คำสั่งเปลี่ยนพื้นหลังการ์ดแชท
                     // ==========================================================
                     else if (check('bg')) {
-                        const { widget, header, sendBtn } = deps;
-                        reply = extra.changeBackground(widget, header, sendBtn);
+                        const { widget, header, sendBtn } = deps || {};
+                        reply = window.Extra.changeBackground(widget, header, sendBtn);
                     }
 
                     // ==========================================================
                     // 9. คำสั่งเปลี่ยนพื้นหลังแอป (ทั้งหน้า)
                     // ==========================================================
                     else if (msg.includes('เปลี่ยนพื้นหลังแอป') || msg.includes('เปลี่ยนพื้นหลังหน้าเว็บ')) {
-                        reply = extra.changeAppBackground();
+                        reply = window.Extra.changeAppBackground();
                     }
 
                     // ==========================================================
                     // 10. คำสั่งเปลี่ยนฉากหลัง (Background Library)
                     // ==========================================================
                     else if (check('bg_forest')) {
-                        const success = extra.setBackgroundById('bg_forest');
+                        const success = window.Extra.setBackgroundById('bg_forest');
                         reply = success ? '✅ เปลี่ยนเป็นฉากหลัง "เรือนไทยโบราณ" แล้วครับ' : '❌ เปลี่ยนฉากหลังไม่สำเร็จ';
                     }
                     else if (check('bg_ocean')) {
-                        const success = extra.setBackgroundById('bg_ocean');
+                        const success = window.Extra.setBackgroundById('bg_ocean');
                         reply = success ? '✅ เปลี่ยนเป็นฉากหลัง "ห้องสมุดพระเครื่อง" แล้วครับ' : '❌ เปลี่ยนฉากหลังไม่สำเร็จ';
                     }
                     else if (check('bg_mountain')) {
-                        const success = extra.setBackgroundById('bg_mountain');
+                        const success = window.Extra.setBackgroundById('bg_mountain');
                         reply = success ? '✅ เปลี่ยนเป็นฉากหลัง "อยุธยา" แล้วครับ' : '❌ เปลี่ยนฉากหลังไม่สำเร็จ';
                     }
                     else if (check('bg_city')) {
-                        const success = extra.setBackgroundById('bg_city');
+                        const success = window.Extra.setBackgroundById('bg_city');
                         reply = success ? '✅ เปลี่ยนเป็นฉากหลัง "เมืองกลางคืน" แล้วครับ' : '❌ เปลี่ยนฉากหลังไม่สำเร็จ';
                     }
                     else if (check('bg_default')) {
-                        const success = extra.setBackgroundById('bg_default');
+                        const success = window.Extra.setBackgroundById('bg_default');
                         reply = success ? '✅ เปลี่ยนเป็นลายตาราง (เริ่มต้น) แล้วครับ' : '❌ เปลี่ยนฉากหลังไม่สำเร็จ';
                     }
 
@@ -166,39 +168,39 @@
                     // 11. คำสั่งปรับแต่งภาพ (Brightness, Contrast, Saturation, Blur)
                     // ==========================================================
                     else if (check('brightness_inc')) {
-                        const val = extra.controlSlider('brightness', 10);
+                        const val = window.Extra.controlSlider('brightness', 10);
                         reply = `✅ เพิ่มความสว่างเป็น ${val} แล้วครับ`;
                     }
                     else if (check('brightness_dec')) {
-                        const val = extra.controlSlider('brightness', -10);
+                        const val = window.Extra.controlSlider('brightness', -10);
                         reply = `✅ ลดความสว่างเป็น ${val} แล้วครับ`;
                     }
                     else if (check('contrast_inc')) {
-                        const val = extra.controlSlider('contrast', 10);
+                        const val = window.Extra.controlSlider('contrast', 10);
                         reply = `✅ เพิ่มความคมชัดเป็น ${val} แล้วครับ`;
                     }
                     else if (check('contrast_dec')) {
-                        const val = extra.controlSlider('contrast', -10);
+                        const val = window.Extra.controlSlider('contrast', -10);
                         reply = `✅ ลดความคมชัดเป็น ${val} แล้วครับ`;
                     }
                     else if (check('saturation_inc')) {
-                        const val = extra.controlSlider('saturation', 10);
+                        const val = window.Extra.controlSlider('saturation', 10);
                         reply = `✅ เพิ่มความอิ่มสีเป็น ${val} แล้วครับ`;
                     }
                     else if (check('saturation_dec')) {
-                        const val = extra.controlSlider('saturation', -10);
+                        const val = window.Extra.controlSlider('saturation', -10);
                         reply = `✅ ลดความอิ่มสีเป็น ${val} แล้วครับ`;
                     }
                     else if (check('blur_inc')) {
-                        const val = extra.controlSlider('blur', 1);
+                        const val = window.Extra.controlSlider('blur', 1);
                         reply = `✅ เพิ่มเบลอเป็น ${val} แล้วครับ`;
                     }
                     else if (check('blur_dec')) {
-                        const val = extra.controlSlider('blur', -1);
+                        const val = window.Extra.controlSlider('blur', -1);
                         reply = `✅ ลดเบลอเป็น ${val} แล้วครับ`;
                     }
                     else if (check('reset_adjust')) {
-                        reply = extra.resetAllAdjustments();
+                        reply = window.Extra.resetAllAdjustments();
                     }
 
                     // ==========================================================
@@ -206,34 +208,34 @@
                     // ==========================================================
                     else if (check('filter_grayscale')) {
                         const select = document.getElementById('filterSelect');
-                        if (select) { select.value = 'grayscale'; extra.triggerButton('applyFilterBtn'); reply = '✅ เปลี่ยนเป็นฟิลเตอร์ขาวดำแล้วครับ'; } else reply = '❌ ไม่พบตัวเลือกฟิลเตอร์';
+                        if (select) { select.value = 'grayscale'; window.Extra.triggerButton('applyFilterBtn'); reply = '✅ เปลี่ยนเป็นฟิลเตอร์ขาวดำแล้วครับ'; } else reply = '❌ ไม่พบตัวเลือกฟิลเตอร์';
                     }
                     else if (check('filter_sepia')) {
                         const select = document.getElementById('filterSelect');
-                        if (select) { select.value = 'sepia'; extra.triggerButton('applyFilterBtn'); reply = '✅ เปลี่ยนเป็นฟิลเตอร์ซีเปียแล้วครับ'; } else reply = '❌ ไม่พบตัวเลือกฟิลเตอร์';
+                        if (select) { select.value = 'sepia'; window.Extra.triggerButton('applyFilterBtn'); reply = '✅ เปลี่ยนเป็นฟิลเตอร์ซีเปียแล้วครับ'; } else reply = '❌ ไม่พบตัวเลือกฟิลเตอร์';
                     }
                     else if (check('filter_invert')) {
                         const select = document.getElementById('filterSelect');
-                        if (select) { select.value = 'invert'; extra.triggerButton('applyFilterBtn'); reply = '✅ เปลี่ยนเป็นฟิลเตอร์กลับสีแล้วครับ'; } else reply = '❌ ไม่พบตัวเลือกฟิลเตอร์';
+                        if (select) { select.value = 'invert'; window.Extra.triggerButton('applyFilterBtn'); reply = '✅ เปลี่ยนเป็นฟิลเตอร์กลับสีแล้วครับ'; } else reply = '❌ ไม่พบตัวเลือกฟิลเตอร์';
                     }
                     else if (check('filter_vintage')) {
                         const select = document.getElementById('filterSelect');
-                        if (select) { select.value = 'vintage'; extra.triggerButton('applyFilterBtn'); reply = '✅ เปลี่ยนเป็นฟิลเตอร์วินเทจแล้วครับ'; } else reply = '❌ ไม่พบตัวเลือกฟิลเตอร์';
+                        if (select) { select.value = 'vintage'; window.Extra.triggerButton('applyFilterBtn'); reply = '✅ เปลี่ยนเป็นฟิลเตอร์วินเทจแล้วครับ'; } else reply = '❌ ไม่พบตัวเลือกฟิลเตอร์';
                     }
                     else if (check('filter_cool')) {
                         const select = document.getElementById('filterSelect');
-                        if (select) { select.value = 'cool'; extra.triggerButton('applyFilterBtn'); reply = '✅ เปลี่ยนเป็นฟิลเตอร์โทนเย็นแล้วครับ'; } else reply = '❌ ไม่พบตัวเลือกฟิลเตอร์';
+                        if (select) { select.value = 'cool'; window.Extra.triggerButton('applyFilterBtn'); reply = '✅ เปลี่ยนเป็นฟิลเตอร์โทนเย็นแล้วครับ'; } else reply = '❌ ไม่พบตัวเลือกฟิลเตอร์';
                     }
                     else if (check('filter_warm')) {
                         const select = document.getElementById('filterSelect');
-                        if (select) { select.value = 'warm'; extra.triggerButton('applyFilterBtn'); reply = '✅ เปลี่ยนเป็นฟิลเตอร์โทนอุ่นแล้วครับ'; } else reply = '❌ ไม่พบตัวเลือกฟิลเตอร์';
+                        if (select) { select.value = 'warm'; window.Extra.triggerButton('applyFilterBtn'); reply = '✅ เปลี่ยนเป็นฟิลเตอร์โทนอุ่นแล้วครับ'; } else reply = '❌ ไม่พบตัวเลือกฟิลเตอร์';
                     }
                     else if (check('apply_filter')) {
-                        const success = extra.triggerButton('applyFilterBtn');
+                        const success = window.Extra.triggerButton('applyFilterBtn');
                         reply = success ? '✅ ใช้ฟิลเตอร์แล้วครับ' : '❌ ไม่พบปุ่มใช้ฟิลเตอร์';
                     }
                     else if (check('remove_filter')) {
-                        const success = extra.triggerButton('removeFilterBtn');
+                        const success = window.Extra.triggerButton('removeFilterBtn');
                         reply = success ? '✅ ลบฟิลเตอร์แล้วครับ' : '❌ ไม่พบปุ่มลบฟิลเตอร์';
                     }
 
@@ -241,15 +243,15 @@
                     // 13. คำสั่งหมุน/พลิก
                     // ==========================================================
                     else if (check('flip_h')) {
-                        const success = extra.triggerButton('flipHorizBtn');
+                        const success = window.Extra.triggerButton('flipHorizBtn');
                         reply = success ? '✅ กลับซ้ายขวาแล้วครับ' : '❌ ไม่พบปุ่มกลับซ้ายขวา';
                     }
                     else if (check('flip_v')) {
-                        const success = extra.triggerButton('flipVertBtn');
+                        const success = window.Extra.triggerButton('flipVertBtn');
                         reply = success ? '✅ กลับบนล่างแล้วครับ' : '❌ ไม่พบปุ่มกลับบนล่าง';
                     }
                     else if (check('rotate')) {
-                        const success = extra.triggerButton('rotateBtn');
+                        const success = window.Extra.triggerButton('rotateBtn');
                         reply = success ? '✅ หมุนภาพแล้วครับ' : '❌ ไม่พบปุ่มหมุน';
                     }
 
@@ -257,7 +259,7 @@
                     // 14. ลบพื้นหลัง
                     // ==========================================================
                     else if (check('remove_bg')) {
-                        const success = extra.triggerButton('removeBgBtn');
+                        const success = window.Extra.triggerButton('removeBgBtn');
                         reply = success ? '✨ กำลังลบพื้นหลังให้นะครับ (อาจใช้เวลาสักครู่)' : '❌ ไม่พบปุ่มลบพื้นหลัง';
                     }
 
@@ -265,7 +267,7 @@
                     // 15. Video Generator
                     // ==========================================================
                     else if (check('video_gen')) {
-                        reply = await extra.triggerVideoGeneration();
+                        reply = await window.Extra.triggerVideoGeneration();
                     }
                     else if (check('add_image')) {
                         const imageInput = document.getElementById('imageFileInput');
@@ -276,11 +278,11 @@
                         if (audioInput) { audioInput.click(); reply = '✅ เปิดให้เลือกไฟล์เสียงแล้วครับ กรุณาเลือกไฟล์เสียง'; } else reply = '❌ ไม่พบปุ่มเลือกไฟล์เสียง';
                     }
                     else if (check('clear_image')) {
-                        extra.clearImage();
+                        window.Extra.clearImage();
                         reply = '✅ ลบภาพเรียบร้อยแล้วครับ';
                     }
                     else if (check('clear_audio')) {
-                        extra.clearAudio();
+                        window.Extra.clearAudio();
                         reply = '✅ ลบเสียงเรียบร้อยแล้วครับ';
                     }
 
@@ -288,7 +290,7 @@
                     // 16. รีเซ็ตทั้งหมด
                     // ==========================================================
                     else if (check('reset_all')) {
-                        extra.resetAllAdjustments();
+                        window.Extra.resetAllAdjustments();
                         const filterSelect = document.getElementById('filterSelect');
                         if (filterSelect) filterSelect.value = 'none';
                         const removeFilterBtn = document.getElementById('removeFilterBtn');
@@ -364,7 +366,6 @@
                             `เกี่ยวกับ "${userMessage}" คุณอยากให้ผมช่วยอะไรไหม?`
                         ];
                         reply = general[Math.floor(Math.random() * general.length)];
-                        // ถ้ามีชื่อผู้ใช้ ให้แทรกชื่อ
                         if (conversationContext.userName) {
                             reply = `${conversationContext.userName} ${reply}`;
                         }

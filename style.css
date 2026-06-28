@@ -1,5 +1,6 @@
 /* ============================================================
    ตัวแปรหลัก - ธีมโฮโลแกรม (ปรับพื้นหลังการ์ดเป็น 225,255,255)
+   ปรับขนาดโดยรวมให้เล็กลง (Compact)
    ============================================================ */
 :root {
     /* สีนีออนหลักของธีม */
@@ -10,7 +11,7 @@
     --holo-gold: #ffe600;
     --holo-red: #ff0055;
 
-    /* ✅ สีพื้นหลังและพื้นผิว (ปรับการ์ดให้ทึบขึ้นเล็กน้อยเพื่อความอ่านง่าย) */
+    /* ✅ สีพื้นหลังและพื้นผิว */
     --bg-deep: #0a0a1a;
     --bg-card: rgba(225, 255, 255, 0.15);
     --border-glow: rgba(225, 255, 255, 0.2);
@@ -19,10 +20,11 @@
 
     --font-display: 'Inter', 'Rajdhani', sans-serif;
 
-    /* ตัวแปรสำหรับ responsive (ปรับ min font size ให้ใหญ่ขึ้น) */
-    --font-size-base: clamp(0.75rem, 2.5vw, 1rem);
-    --spacing-base: clamp(0.5rem, 1.5vw, 1rem);
-    --radius-base: clamp(1rem, 2vw, 1.5rem);
+    /* ตัวแปรแบบ Fluid - ปรับให้เล็กลง */
+    --font-size-base: clamp(0.5rem, 1.6vw, 0.8rem);
+    --spacing-base: clamp(0.25rem, 1vw, 0.7rem);
+    --radius-base: clamp(0.4rem, 1.2vw, 0.9rem);
+    --container-max: 1100px;
 }
 
 /* ============================================================
@@ -41,12 +43,12 @@ body {
     
     font-family: var(--font-display);
     color: var(--text-primary);
-    padding: var(--spacing-base);
+    padding: clamp(0.2rem, 1.2vw, 0.8rem);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     position: relative;
-    box-shadow: inset 0 0 150px rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 0 100px rgba(255, 255, 255, 0.08);
     font-size: var(--font-size-base);
 }
 
@@ -72,8 +74,8 @@ body::before {
     background: repeating-linear-gradient(0deg, 
         transparent, 
         transparent 2px, 
-        rgba(0, 243, 255, 0.015) 2px, 
-        rgba(0, 243, 255, 0.015) 4px);
+        rgba(0, 243, 255, 0.01) 2px, 
+        rgba(0, 243, 255, 0.01) 4px);
     pointer-events: none;
     z-index: 1;
     animation: scanline-move 10s linear infinite;
@@ -86,32 +88,33 @@ body::before {
 }
 
 .app-container {
-    max-width: 1200px;
+    max-width: var(--container-max);
     margin: 0 auto;
     width: 100%;
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: clamp(0.4rem, 1.5vh, 1rem);
     position: relative;
     z-index: 2;
-    padding: 0 24px;
+    padding: 0 clamp(0.3rem, 1.2vw, 1rem);
 }
 
 /* ============================================================
-   ส่วนหัว (HEADER) - ดีไซน์โฮโลแกรม
+   ส่วนหัว (HEADER) - ดีไซน์โฮโลแกรม (ยืดหยุ่น)
    ============================================================ */
 .app-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
+    gap: clamp(0.2rem, 1vw, 0.6rem);
     background: rgba(225, 255, 255, 0.08);
-    backdrop-filter: blur(16px);
-    padding: var(--spacing-base) calc(var(--spacing-base) * 1.5);
+    backdrop-filter: blur(12px);
+    padding: clamp(0.25rem, 0.8vw, 0.6rem) clamp(0.4rem, 1.2vw, 0.9rem);
     border-radius: var(--radius-base);
     border: 1px solid rgba(225, 255, 255, 0.15);
-    box-shadow: 0 0 30px rgba(225, 255, 255, 0.05), inset 0 0 30px rgba(225, 255, 255, 0.05);
+    box-shadow: 0 0 20px rgba(225, 255, 255, 0.03), inset 0 0 20px rgba(225, 255, 255, 0.03);
     flex-shrink: 0;
     position: relative;
     overflow: hidden;
@@ -126,9 +129,9 @@ body::before {
     height: 200%;
     background: conic-gradient(from 0deg, 
         transparent, 
-        rgba(0, 243, 255, 0.05), 
+        rgba(0, 243, 255, 0.03), 
         transparent, 
-        rgba(255, 0, 229, 0.05), 
+        rgba(255, 0, 229, 0.03), 
         transparent);
     animation: spin-glow 15s linear infinite;
     pointer-events: none;
@@ -143,31 +146,35 @@ body::before {
 .logo-area {
     display: flex;
     align-items: center;
-    gap: var(--spacing-base);
+    gap: clamp(0.2rem, 1vw, 0.6rem);
     z-index: 2;
+    flex: 1 1 auto;
+    min-width: 80px;
 }
 
 .logo-icon {
-    font-size: clamp(1.8rem, 5vw, 2.2rem);
-    filter: drop-shadow(0 0 10px var(--holo-cyan));
+    font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+    filter: drop-shadow(0 0 8px var(--holo-cyan));
     animation: pulse-icon 2s ease-in-out infinite;
+    flex-shrink: 0;
 }
 
 @keyframes pulse-icon {
-    0%, 100% { filter: drop-shadow(0 0 10px var(--holo-cyan)); }
-    50% { filter: drop-shadow(0 0 25px var(--holo-magenta)); }
+    0%, 100% { filter: drop-shadow(0 0 8px var(--holo-cyan)); }
+    50% { filter: drop-shadow(0 0 18px var(--holo-magenta)); }
 }
 
 .logo-text h1 {
-    font-size: clamp(1.2rem, 4vw, 1.6rem);
-    font-weight: 800;
+    font-size: clamp(0.8rem, 3vw, 1.4rem);
+    font-weight: 700;
     background: linear-gradient(135deg, var(--holo-cyan), var(--holo-purple), var(--holo-magenta));
     background-size: 300% 300%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     animation: gradient-shift 4s ease-in-out infinite alternate;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
 }
 
 @keyframes gradient-shift {
@@ -176,58 +183,62 @@ body::before {
 }
 
 .logo-text p {
-    font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+    font-size: clamp(0.4rem, 1vw, 0.6rem);
     color: var(--holo-cyan);
-    letter-spacing: 3px;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    opacity: 0.8;
-    text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+    opacity: 0.7;
+    text-shadow: 0 0 8px rgba(0, 243, 255, 0.4);
+    white-space: nowrap;
 }
 
 .header-badges {
     display: flex;
-    gap: var(--spacing-base);
+    gap: clamp(0.2rem, 0.8vw, 0.5rem);
     flex-wrap: wrap;
     align-items: center;
     z-index: 2;
+    flex: 0 1 auto;
 }
 
 .badge-pro {
-    background: rgba(255, 0, 229, 0.15);
+    background: rgba(255, 0, 229, 0.12);
     border: 1px solid var(--holo-magenta);
-    padding: 6px 14px;
-    border-radius: 40px;
-    font-size: clamp(0.7rem, 1.2vw, 0.8rem);
-    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 30px;
+    font-size: clamp(0.4rem, 0.9vw, 0.6rem);
+    font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 0.2rem;
     color: var(--holo-cyan);
     text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 0 20px rgba(255, 0, 229, 0.2);
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 15px rgba(255, 0, 229, 0.15);
+    white-space: nowrap;
 }
 
 .status-tag {
     background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(4px);
-    padding: 6px 16px;
-    border-radius: 40px;
-    font-size: clamp(0.7rem, 1.2vw, 0.8rem);
+    padding: 0.15rem 0.5rem;
+    border-radius: 30px;
+    font-size: clamp(0.4rem, 0.9vw, 0.6rem);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0.2rem;
     color: var(--text-secondary);
-    border: 1px solid rgba(0, 243, 255, 0.2);
+    border: 1px solid rgba(0, 243, 255, 0.15);
+    white-space: nowrap;
 }
 
 .status-tag .dot {
-    width: 8px;
-    height: 8px;
+    width: clamp(4px, 0.7vw, 6px);
+    height: clamp(4px, 0.7vw, 6px);
     background: var(--holo-cyan);
     border-radius: 50%;
     display: inline-block;
-    box-shadow: 0 0 15px var(--holo-cyan);
+    box-shadow: 0 0 12px var(--holo-cyan);
     animation: blink-dot 1.5s infinite;
 }
 
@@ -237,19 +248,19 @@ body::before {
 }
 
 /* ============================================================
-   พาเนล Canvas (พื้นที่แสดงผล)
+   พาเนล Canvas (พื้นที่แสดงผล) - ยืดหยุ่น
    ============================================================ */
 .canvas-panel {
     background: var(--bg-card);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(10px);
     border-radius: var(--radius-base);
-    padding: var(--spacing-base);
-    border: 1px solid rgba(225, 255, 255, 0.15);
-    box-shadow: 0 0 40px rgba(225, 255, 255, 0.05), inset 0 0 40px rgba(225, 255, 255, 0.02);
-    flex: 1;
+    padding: clamp(0.2rem, 0.8vw, 0.6rem);
+    border: 1px solid rgba(225, 255, 255, 0.12);
+    box-shadow: 0 0 30px rgba(225, 255, 255, 0.03), inset 0 0 30px rgba(225, 255, 255, 0.01);
+    flex: 2 1 auto;
     display: flex;
     flex-direction: column;
-    min-height: 55vh;
+    min-height: clamp(140px, 25vh, 280px);
     position: relative;
     overflow: hidden;
 }
@@ -257,10 +268,10 @@ body::before {
 .canvas-panel::before {
     content: '';
     position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
     border-radius: var(--radius-base);
     background: conic-gradient(from 0deg, 
         transparent 0%, 
@@ -271,8 +282,8 @@ body::before {
         transparent 100%);
     z-index: -1;
     animation: spin-border 6s linear infinite;
-    opacity: 0.6;
-    border: 2px solid var(--holo-cyan);
+    opacity: 0.4;
+    border: 1px solid var(--holo-cyan);
 }
 
 @supports (--angle: 0deg) {
@@ -306,8 +317,8 @@ body::before {
     justify-content: center;
     align-items: center;
     flex: 1;
-    min-height: clamp(200px, 40vh, 320px);
-    border: 1px solid rgba(225, 255, 255, 0.1);
+    min-height: clamp(80px, 18vh, 200px);
+    border: 1px solid rgba(225, 255, 255, 0.08);
 }
 
 .canvas-wrapper canvas {
@@ -318,26 +329,26 @@ body::before {
     display: block;
     cursor: crosshair;
     object-fit: contain;
-    filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.1));
+    filter: drop-shadow(0 0 15px rgba(0, 243, 255, 0.08));
 }
 
 .drag-overlay {
     position: absolute;
     inset: 0;
     background: rgba(0, 10, 30, 0.85);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(6px);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-base);
+    gap: clamp(0.2rem, 1vw, 0.6rem);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
     color: white;
     border-radius: var(--radius-base);
     border: 2px dashed var(--holo-cyan);
-    box-shadow: inset 0 0 50px rgba(0, 243, 255, 0.1);
+    box-shadow: inset 0 0 30px rgba(0, 243, 255, 0.08);
 }
 
 .canvas-wrapper.drag-over .drag-overlay {
@@ -345,38 +356,40 @@ body::before {
 }
 
 .drag-overlay .icon-big {
-    font-size: clamp(2.5rem, 8vw, 3.5rem);
-    filter: drop-shadow(0 0 30px var(--holo-cyan));
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    filter: drop-shadow(0 0 20px var(--holo-cyan));
     animation: pulse-icon 1.5s infinite;
 }
 
 /* ============================================================
-   พาเนลควบคุม (การ์ดต่างๆ)
+   พาเนลควบคุม (การ์ดต่างๆ) - Responsive Grid อัตโนมัติ
    ============================================================ */
 .controls-panel {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: clamp(0.3rem, 1.2vw, 0.8rem);
     flex-shrink: 0;
 }
 
-/* ✅ การ์ดหลัก */
+/* ✅ การ์ดหลัก - ยืดหยุ่น */
 .card {
     background: var(--bg-card);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(225, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(225, 255, 255, 0.15);
     border-radius: var(--radius-base);
-    padding: var(--spacing-base);
+    padding: clamp(0.3rem, 0.8vw, 0.6rem);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
-    box-shadow: 0 0 20px rgba(225, 255, 255, 0.05);
+    box-shadow: 0 0 15px rgba(225, 255, 255, 0.03);
+    display: flex;
+    flex-direction: column;
 }
 
 .card:hover {
     border-color: var(--holo-cyan);
-    box-shadow: 0 0 40px rgba(0, 243, 255, 0.1), inset 0 0 30px rgba(225, 255, 255, 0.05);
-    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.08), inset 0 0 20px rgba(225, 255, 255, 0.03);
+    transform: translateY(-1px);
 }
 
 .card::after {
@@ -384,30 +397,30 @@ body::before {
     position: absolute;
     top: 0;
     left: 0;
-    width: 3px;
+    width: 2px;
     height: 100%;
     background: linear-gradient(to bottom, var(--holo-cyan), var(--holo-magenta));
     border-radius: 0 2px 2px 0;
-    box-shadow: 0 0 15px var(--holo-cyan);
-    opacity: 0.6;
+    box-shadow: 0 0 10px var(--holo-cyan);
+    opacity: 0.5;
 }
 
 .card-title {
-    font-size: clamp(0.75rem, 1.8vw, 0.9rem);
-    font-weight: 700;
-    margin-bottom: var(--spacing-base);
+    font-size: clamp(0.5rem, 1.2vw, 0.7rem);
+    font-weight: 600;
+    margin-bottom: clamp(0.15rem, 0.6vh, 0.4rem);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0.2rem;
     color: var(--holo-cyan);
-    padding-left: 12px;
+    padding-left: clamp(0.2rem, 0.6vw, 0.5rem);
     text-transform: uppercase;
-    letter-spacing: 1.5px;
-    text-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+    letter-spacing: 1px;
+    text-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
 }
 
 .slider-group {
-    margin-bottom: var(--spacing-base);
+    margin-bottom: clamp(0.15rem, 0.6vh, 0.4rem);
 }
 .slider-group:last-child {
     margin-bottom: 0;
@@ -416,90 +429,90 @@ body::before {
 .slider-header {
     display: flex;
     justify-content: space-between;
-    font-size: clamp(0.75rem, 1.5vw, 0.85rem);
-    margin-bottom: 6px;
+    font-size: clamp(0.45rem, 1vw, 0.65rem);
+    margin-bottom: 1px;
     color: var(--text-secondary);
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
 }
 
 .value-badge {
-    background: rgba(225, 255, 255, 0.1);
-    padding: 2px 10px;
-    border-radius: 20px;
+    background: rgba(225, 255, 255, 0.08);
+    padding: 0 0.4rem;
+    border-radius: 15px;
     font-family: 'Courier New', monospace;
-    font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+    font-size: clamp(0.45rem, 1vw, 0.65rem);
     color: var(--holo-cyan);
-    border: 1px solid rgba(225, 255, 255, 0.2);
+    border: 1px solid rgba(225, 255, 255, 0.15);
 }
 
 /* ============================================================
-   สไลด์เลอร์ (Range Slider)
+   สไลด์เลอร์ (Range Slider) - ขนาดอัตโนมัติ
    ============================================================ */
 input[type="range"] {
     width: 100%;
-    height: 4px;
+    height: clamp(2px, 0.3vw, 4px);
     -webkit-appearance: none;
-    background: rgba(225, 255, 255, 0.15);
-    border-radius: 10px;
+    background: rgba(225, 255, 255, 0.12);
+    border-radius: 8px;
     outline: none;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.4);
 }
 
 input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: clamp(24px, 5vw, 28px);
-    height: clamp(24px, 5vw, 28px);
+    width: clamp(12px, 2.5vw, 18px);
+    height: clamp(12px, 2.5vw, 18px);
     background: radial-gradient(circle, var(--holo-cyan), var(--holo-purple));
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 0 20px var(--holo-cyan), 0 0 60px rgba(0, 243, 255, 0.2);
-    border: 2px solid rgba(225, 255, 255, 0.3);
+    box-shadow: 0 0 15px var(--holo-cyan), 0 0 40px rgba(0, 243, 255, 0.15);
+    border: 1.5px solid rgba(225, 255, 255, 0.3);
     transition: 0.15s;
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-    transform: scale(1.15);
-    box-shadow: 0 0 30px var(--holo-cyan), 0 0 80px var(--holo-magenta);
+    transform: scale(1.1);
+    box-shadow: 0 0 25px var(--holo-cyan), 0 0 60px var(--holo-magenta);
 }
 
 input[type="range"]::-moz-range-thumb {
-    width: clamp(24px, 5vw, 28px);
-    height: clamp(24px, 5vw, 28px);
+    width: clamp(12px, 2.5vw, 18px);
+    height: clamp(12px, 2.5vw, 18px);
     background: radial-gradient(circle, var(--holo-cyan), var(--holo-purple));
     border-radius: 50%;
     cursor: pointer;
-    border: 2px solid rgba(225, 255, 255, 0.3);
-    box-shadow: 0 0 20px var(--holo-cyan);
+    border: 1.5px solid rgba(225, 255, 255, 0.3);
+    box-shadow: 0 0 15px var(--holo-cyan);
 }
 
 /* ============================================================
-   Select Dropdown
+   Select Dropdown - ยืดหยุ่น
    ============================================================ */
 select {
     width: 100%;
     background: rgba(0, 10, 30, 0.7);
     backdrop-filter: blur(4px);
-    border: 1px solid rgba(225, 255, 255, 0.2);
-    padding: clamp(10px, 2vw, 14px) clamp(12px, 2vw, 16px);
-    border-radius: 40px;
+    border: 1px solid rgba(225, 255, 255, 0.15);
+    padding: clamp(0.2rem, 0.8vw, 0.5rem) clamp(0.3rem, 1vw, 0.6rem);
+    border-radius: 30px;
     color: var(--text-primary);
-    margin: var(--spacing-base) 0 4px;
+    margin: clamp(0.1rem, 0.6vh, 0.3rem) 0 0.1rem;
     cursor: pointer;
     font-family: var(--font-display);
-    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    font-size: clamp(0.5rem, 1.2vw, 0.7rem);
     transition: 0.2s;
-    min-height: 44px;
+    min-height: clamp(22px, 3vh, 32px);
 }
 
 select:hover {
     border-color: var(--holo-cyan);
-    box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.08);
 }
 
 select:focus {
     outline: none;
     border-color: var(--holo-magenta);
-    box-shadow: 0 0 30px rgba(255, 0, 229, 0.15);
+    box-shadow: 0 0 20px rgba(255, 0, 229, 0.1);
 }
 
 select option {
@@ -507,80 +520,80 @@ select option {
 }
 
 /* ============================================================
-   ปุ่มต่างๆ
+   ปุ่มต่างๆ - ยืดหยุ่นและจัดเรียงอัตโนมัติ
    ============================================================ */
 .btn-group {
     display: flex;
-    gap: clamp(8px, 2vw, 12px);
-    margin-top: var(--spacing-base);
+    gap: clamp(0.15rem, 0.8vw, 0.5rem);
+    margin-top: clamp(0.15rem, 0.6vh, 0.4rem);
     flex-wrap: wrap;
 }
 
 button {
-    padding: 12px 20px;
-    border-radius: 40px;
+    padding: clamp(0.2rem, 0.8vw, 0.5rem) clamp(0.4rem, 1.2vw, 0.8rem);
+    border-radius: 30px;
     border: none;
-    background: rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.06);
     color: white;
     cursor: pointer;
-    font-size: clamp(0.8rem, 1.8vw, 0.95rem);
-    font-weight: 600;
+    font-size: clamp(0.5rem, 1.2vw, 0.7rem);
+    font-weight: 500;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 0.2rem;
     transition: all 0.2s ease;
-    min-height: 48px;
-    min-width: 48px;
+    min-height: clamp(22px, 3vh, 32px);
+    min-width: clamp(22px, 3vh, 32px);
     flex: 1 1 auto;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
     font-family: var(--font-display);
 }
 
 button.primary {
     background: linear-gradient(135deg, var(--holo-cyan), var(--holo-purple));
     color: #05080f;
-    box-shadow: 0 0 25px rgba(0, 243, 255, 0.3);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
 }
 button.primary:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 0 45px rgba(0, 243, 255, 0.5), 0 0 80px rgba(176, 38, 255, 0.2);
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.4), 0 0 60px rgba(176, 38, 255, 0.15);
 }
 button.primary:active {
-    transform: translateY(0) scale(0.98);
+    transform: translateY(0) scale(0.97);
 }
 
 button.secondary {
-    background: rgba(225, 255, 255, 0.05);
+    background: rgba(225, 255, 255, 0.04);
     color: var(--holo-cyan);
-    border: 1px solid rgba(225, 255, 255, 0.2);
+    border: 1px solid rgba(225, 255, 255, 0.15);
     backdrop-filter: blur(4px);
 }
 button.secondary:hover {
-    background: rgba(225, 255, 255, 0.1);
+    background: rgba(225, 255, 255, 0.08);
     border-color: var(--holo-cyan);
-    box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.08);
 }
 
 button.danger {
     background: linear-gradient(135deg, var(--holo-red), #aa0044);
     color: white;
-    box-shadow: 0 0 25px rgba(255, 0, 85, 0.3);
+    box-shadow: 0 0 20px rgba(255, 0, 85, 0.2);
 }
 button.danger:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 45px rgba(255, 0, 85, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 0 30px rgba(255, 0, 85, 0.4);
 }
 
 button.warning {
     background: linear-gradient(135deg, var(--holo-gold), #ff8c00);
     color: #05080f;
-    box-shadow: 0 0 25px rgba(255, 230, 0, 0.3);
+    box-shadow: 0 0 20px rgba(255, 230, 0, 0.2);
 }
 button.warning:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 45px rgba(255, 230, 0, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 0 30px rgba(255, 230, 0, 0.4);
 }
 
 button.voice-btn {
@@ -588,11 +601,11 @@ button.voice-btn {
     background-size: 300% 300%;
     color: white;
     animation: gradient-shift 3s ease-in-out infinite alternate;
-    box-shadow: 0 0 30px rgba(255, 0, 229, 0.3);
+    box-shadow: 0 0 20px rgba(255, 0, 229, 0.2);
 }
 button.voice-btn:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 0 50px rgba(255, 0, 229, 0.5);
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 0 35px rgba(255, 0, 229, 0.4);
 }
 
 button:disabled {
@@ -603,7 +616,7 @@ button:disabled {
 }
 
 /* ============================================================
-   Sci-Fi Ultimate Button V2
+   Sci-Fi Ultimate Button V2 (ขนาดอัตโนมัติ)
    ============================================================ */
 button.sci-fi-btn {
     position: relative;
@@ -611,28 +624,28 @@ button.sci-fi-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.15);
     background: radial-gradient(circle at 30% 30%,
         rgba(0,243,255,0.9),
         rgba(176,38,255,0.9),
         rgba(5,10,20,1));
     box-shadow:
-        0 0 25px rgba(0,243,255,0.4),
-        inset 0 0 20px rgba(255,255,255,0.1);
+        0 0 20px rgba(0,243,255,0.3),
+        inset 0 0 15px rgba(255,255,255,0.08);
     color: #05080f;
     cursor: pointer;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
     padding: 0;
     border-radius: 50%;
-    width: 64px;
-    height: 64px;
+    width: clamp(32px, 5vw, 44px);
+    height: clamp(32px, 5vw, 44px);
     flex: 0 0 auto;
 }
 
 button.sci-fi-btn::before {
     content: "";
     position: absolute;
-    inset: -6px;
+    inset: -4px;
     border-radius: 50%;
     background: conic-gradient(
         from 0deg,
@@ -643,7 +656,7 @@ button.sci-fi-btn::before {
     );
     animation: orbit-spin 2.5s linear infinite;
     filter: blur(1px);
-    opacity: 0.9;
+    opacity: 0.8;
     z-index: -1;
     will-change: transform;
 }
@@ -653,7 +666,7 @@ button.sci-fi-btn::after {
     position: absolute;
     inset: 0;
     background: radial-gradient(circle,
-        rgba(255,255,255,0.25),
+        rgba(255,255,255,0.2),
         transparent 60%);
     animation: core-pulse 1.4s ease-in-out infinite;
     z-index: 0;
@@ -662,9 +675,9 @@ button.sci-fi-btn::after {
 button.sci-fi-btn .scanline {
     position: absolute;
     width: 120%;
-    height: 3px;
-    background: rgba(0,243,255,0.4);
-    box-shadow: 0 0 20px rgba(0,243,255,0.6);
+    height: 2px;
+    background: rgba(0,243,255,0.3);
+    box-shadow: 0 0 15px rgba(0,243,255,0.4);
     top: -20%;
     left: -10%;
     transform: rotate(25deg);
@@ -675,8 +688,8 @@ button.sci-fi-btn .scanline {
 
 button.sci-fi-btn .particle {
     position: absolute;
-    width: 4px;
-    height: 4px;
+    width: 3px;
+    height: 3px;
     background: var(--holo-cyan);
     border-radius: 50%;
     top: 50%;
@@ -689,19 +702,19 @@ button.sci-fi-btn .particle {
 button.sci-fi-btn .icon {
     position: relative;
     z-index: 2;
-    font-size: clamp(1.5rem, 4vw, 2.2rem);
-    filter: drop-shadow(0 0 15px var(--holo-cyan));
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    filter: drop-shadow(0 0 10px var(--holo-cyan));
     line-height: 1;
 }
 
 button.sci-fi-btn:hover {
-    transform: scale(1.12);
+    transform: scale(1.1);
     box-shadow:
-        0 0 40px rgba(0,243,255,0.6),
-        0 0 80px rgba(255,0,229,0.3);
+        0 0 30px rgba(0,243,255,0.5),
+        0 0 60px rgba(255,0,229,0.2);
 }
 button.sci-fi-btn:active {
-    transform: scale(0.92);
+    transform: scale(0.9);
 }
 
 @keyframes orbit-spin {
@@ -710,7 +723,7 @@ button.sci-fi-btn:active {
 }
 @keyframes core-pulse {
     0%,100% { transform: scale(0.9); opacity: 0.4; }
-    50% { transform: scale(1.25); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 1; }
 }
 @keyframes scan-move {
     0% { top: -20%; opacity: 0; }
@@ -718,68 +731,71 @@ button.sci-fi-btn:active {
     100% { top: 120%; opacity: 0; }
 }
 @keyframes particle-float {
-    0% { transform: translate(-10px, -10px); opacity: 0; }
+    0% { transform: translate(-8px, -8px); opacity: 0; }
     50% { opacity: 1; }
-    100% { transform: translate(10px, 10px); opacity: 0; }
+    100% { transform: translate(8px, 8px); opacity: 0; }
 }
 
 /* ============================================================
-   Voice Status
+   Voice Status - ยืดหยุ่น
    ============================================================ */
 .voice-status {
-    background: rgba(0, 10, 30, 0.6);
-    padding: 0 14px;
-    border-radius: 40px;
+    background: rgba(0, 10, 30, 0.5);
+    padding: 0 clamp(0.2rem, 0.8vw, 0.5rem);
+    border-radius: 30px;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    font-size: clamp(0.7rem, 1.5vw, 0.8rem);
-    height: 44px;
+    gap: 0.2rem;
+    font-size: clamp(0.4rem, 1vw, 0.6rem);
+    height: clamp(22px, 3vh, 32px);
     color: var(--holo-cyan);
-    border: 1px solid rgba(225, 255, 255, 0.15);
+    border: 1px solid rgba(225, 255, 255, 0.12);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
 }
 
 /* ============================================================
    Progress Bar
    ============================================================ */
 .progress-container {
-    background: rgba(225, 255, 255, 0.05);
-    border-radius: 40px;
-    height: 6px;
-    margin-top: var(--spacing-base);
+    background: rgba(225, 255, 255, 0.04);
+    border-radius: 30px;
+    height: clamp(3px, 0.4vw, 4px);
+    margin-top: clamp(0.15rem, 0.6vh, 0.3rem);
     overflow: hidden;
-    border: 1px solid rgba(225, 255, 255, 0.1);
+    border: 1px solid rgba(225, 255, 255, 0.08);
 }
 
 .progress-fill {
     width: 0%;
     height: 100%;
     background: linear-gradient(90deg, var(--holo-cyan), var(--holo-magenta));
-    box-shadow: 0 0 20px var(--holo-cyan);
+    box-shadow: 0 0 15px var(--holo-cyan);
     transition: width 0.25s ease;
 }
 
 /* ============================================================
-   Floating Zoom
+   Floating Zoom - ยืดหยุ่นและอยู่มุมล่าง
    ============================================================ */
 .floating-zoom {
     position: fixed;
-    bottom: 24px;
-    right: 24px;
+    bottom: clamp(0.3rem, 1.5vh, 0.8rem);
+    right: clamp(0.3rem, 1.2vw, 0.8rem);
     background: rgba(5, 10, 20, 0.92);
-    backdrop-filter: blur(16px);
-    padding: 10px 18px;
-    border-radius: 20px;
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(225, 255, 255, 0.05);
-    border: 1px solid rgba(225, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    padding: clamp(0.1rem, 0.6vw, 0.4rem) clamp(0.25rem, 1vw, 0.6rem);
+    border-radius: clamp(0.5rem, 1.2vw, 0.9rem);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(225, 255, 255, 0.03);
+    border: 1px solid rgba(225, 255, 255, 0.08);
     transition: opacity 0.3s, transform 0.3s;
     z-index: 1000;
     display: flex;
     align-items: center;
-    gap: clamp(8px, 2vw, 14px);
-    font-size: clamp(0.75rem, 1.8vw, 0.9rem);
+    gap: clamp(0.15rem, 0.8vw, 0.4rem);
+    font-size: clamp(0.5rem, 1.2vw, 0.7rem);
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .floating-zoom.hidden {
@@ -790,64 +806,188 @@ button.sci-fi-btn:active {
 
 .floating-zoom .zoom-label {
     color: var(--text-secondary);
-    font-size: clamp(0.7rem, 1.2vw, 0.8rem);
+    font-size: clamp(0.4rem, 0.8vw, 0.6rem);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
 }
 
 .floating-zoom .zoom-value {
-    font-weight: 700;
+    font-weight: 600;
     color: var(--holo-cyan);
-    min-width: 42px;
+    min-width: clamp(20px, 3vw, 32px);
     text-align: center;
     font-family: 'Courier New', monospace;
-    text-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+    text-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
 }
 
 .floating-zoom button {
     flex: 0 0 auto;
-    padding: 4px 12px;
-    border-radius: 30px;
-    background: rgba(225, 255, 255, 0.05);
+    padding: 0 clamp(0.1rem, 0.6vw, 0.3rem);
+    border-radius: 20px;
+    background: rgba(225, 255, 255, 0.04);
     color: var(--holo-cyan);
-    border: 1px solid rgba(225, 255, 255, 0.2);
-    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    border: 1px solid rgba(225, 255, 255, 0.15);
+    font-size: clamp(0.6rem, 1.5vw, 0.9rem);
     cursor: pointer;
     transition: 0.15s;
-    line-height: 1.6;
+    line-height: 1.4;
     text-transform: none;
     letter-spacing: 0;
-    min-height: 36px;
-    min-width: 36px;
+    min-height: clamp(20px, 2.5vh, 28px);
+    min-width: clamp(20px, 2.5vh, 28px);
 }
 .floating-zoom button:hover {
-    background: rgba(225, 255, 255, 0.1);
+    background: rgba(225, 255, 255, 0.08);
     border-color: var(--holo-cyan);
-    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
 }
 
 /* ============================================================
    Scrollbar
    ============================================================ */
 ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 4px;
+    height: 4px;
 }
 ::-webkit-scrollbar-track {
     background: var(--bg-deep);
 }
 ::-webkit-scrollbar-thumb {
     background: var(--holo-cyan);
-    border-radius: 10px;
-    box-shadow: 0 0 20px var(--holo-cyan);
+    border-radius: 8px;
+    box-shadow: 0 0 15px var(--holo-cyan);
 }
 ::-webkit-scrollbar-thumb:hover {
     background: var(--holo-magenta);
-    box-shadow: 0 0 30px var(--holo-magenta);
+    box-shadow: 0 0 20px var(--holo-magenta);
 }
 
 /* ============================================================
-   prefers-reduced-motion
+   ============================================================
+   MAGIC OVERLAY (เวทมนตร์ลบพื้นหลัง) - เพิ่มเติม
+   ============================================================ */
+#magic-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    animation: magicFadeIn 0.6s ease;
+    pointer-events: none;
+}
+@keyframes magicFadeIn {
+    from { opacity: 0; transform: scale(1.1); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.magic-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+}
+
+/* วงแหวนเวทมนตร์ */
+.magic-circle {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.magic-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+    animation: ringSpin 2s linear infinite;
+}
+.ring1 {
+    width: 100%;
+    height: 100%;
+    border-top: 4px solid #00f3ff;
+    border-right: 4px solid #b026ff;
+    animation-duration: 1.8s;
+}
+.ring2 {
+    width: 75%;
+    height: 75%;
+    border-bottom: 4px solid #ff00e5;
+    border-left: 4px solid #ffe600;
+    animation-duration: 2.5s;
+    animation-direction: reverse;
+}
+.ring3 {
+    width: 50%;
+    height: 50%;
+    border-top: 3px solid #ffe600;
+    border-right: 3px solid #ff00e5;
+    animation-duration: 1.2s;
+    opacity: 0.7;
+}
+
+@keyframes ringSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* ไม้กายสิทธิ์ */
+.magic-wand {
+    font-size: 56px;
+    z-index: 2;
+    filter: drop-shadow(0 0 30px rgba(0, 243, 255, 0.8));
+    animation: wandFloat 1.8s ease-in-out infinite;
+    transform-origin: bottom center;
+}
+@keyframes wandFloat {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-25px) rotate(10deg); }
+}
+
+/* ข้อความเสก */
+.magic-text {
+    color: #e2e8f0;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-shadow: 0 0 30px rgba(0, 243, 255, 0.6), 0 0 60px rgba(176, 38, 255, 0.3);
+    animation: textPulse 1.5s ease-in-out infinite;
+    font-family: 'Inter', 'Rajdhani', sans-serif;
+}
+@keyframes textPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.02); }
+}
+
+/* ประกายดาว */
+.magic-sparkles {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: #ffe600;
+    letter-spacing: 12px;
+    animation: sparkleTwinkle 1.2s ease-in-out infinite alternate;
+}
+@keyframes sparkleTwinkle {
+    0% { opacity: 0.3; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Magic Overlay Responsive */
+@media (max-width: 480px) {
+    .magic-circle { width: 120px; height: 120px; }
+    .magic-wand { font-size: 40px; }
+    .magic-text { font-size: 1rem; }
+}
+
+/* ============================================================
+   prefers-reduced-motion (คงไว้)
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
     *,
@@ -861,7 +1001,12 @@ button.sci-fi-btn:active {
     .app-header::after,
     .sci-fi-btn::before,
     .sci-fi-btn .scanline,
-    .sci-fi-btn .particle {
+    .sci-fi-btn .particle,
+    #magic-overlay,
+    .magic-ring,
+    .magic-wand,
+    .magic-text,
+    .magic-sparkles {
         animation: none !important;
     }
     .logo-icon,
@@ -871,310 +1016,91 @@ button.sci-fi-btn:active {
 }
 
 /* ============================================================
-   การปรับขนาดหน้าจอ (Responsive)
+   Media Query ขนาดเล็กมาก (ปรับเฉพาะกรณีที่จำเป็น)
    ============================================================ */
-
-/* 🔽 แท็บเล็ตและหน้าจอขนาดกลาง (<= 820px) */
-@media (max-width: 820px) {
-    .app-header {
-        flex-direction: column;
-        align-items: stretch;
-        gap: var(--spacing-base);
-        padding: var(--spacing-base);
-    }
-    .header-badges {
-        justify-content: flex-start;
-    }
-    .controls-panel {
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
-    .canvas-panel {
-        min-height: 280px;
-    }
-    .canvas-wrapper {
-        min-height: 200px;
-    }
-    .floating-zoom {
-        bottom: var(--spacing-base);
-        right: var(--spacing-base);
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    .logo-text h1 {
-        font-size: clamp(1.1rem, 4vw, 1.4rem);
-    }
-    .card::after {
-        width: 2px;
-    }
-    .btn-group button {
-        flex: 1 1 40%;
-    }
-}
-
-/* 🔽 มือถือขนาดเล็ก (<= 480px) */
 @media (max-width: 480px) {
-    body {
-        padding: 8px;
-    }
-    .app-container {
-        padding: 0 8px;
-        gap: 12px;
-    }
-    .card {
-        padding: 12px;
-    }
-    .btn-group {
-        flex-direction: column;
-    }
-    .btn-group button {
-        flex: 1 1 auto;
-        width: 100%;
-    }
-    .voice-status {
-        width: 100%;
-        justify-content: center;
-    }
-    .floating-zoom {
-        padding: 6px 10px;
-        gap: 6px;
-    }
-    .floating-zoom button {
-        padding: 2px 8px;
-        min-height: 32px;
-        min-width: 32px;
-    }
-    .floating-zoom .zoom-label {
+    .logo-text p {
         display: none;
     }
-    .header-badges .status-tag .dot {
-        width: 6px;
-        height: 6px;
+    .badge-pro span:not(.icon) {
+        display: none;
     }
     .header-badges .status-tag span:not(.dot) {
         display: none;
     }
-    .badge-pro {
-        font-size: 0.65rem;
-        padding: 4px 10px;
-    }
-    .canvas-panel {
-        padding: 8px;
-        min-height: 200px;
-    }
-    .canvas-wrapper {
-        min-height: 150px;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-        width: 28px;
-        height: 28px;
-    }
-    input[type="range"]::-moz-range-thumb {
-        width: 28px;
-        height: 28px;
-    }
-}
-
-/* 🔽 มือถือแนวนอน (landscape) และจอแคบมาก */
-@media (max-width: 360px) and (orientation: landscape) {
-    .app-header {
-        flex-direction: row;
-        flex-wrap: nowrap;
-        padding: 6px 12px;
-    }
-    .logo-text p {
+    .floating-zoom .zoom-label {
         display: none;
     }
-    .logo-icon {
-        font-size: 1.4rem;
+    .btn-group {
+        flex-direction: column;
     }
-    .logo-text h1 {
-        font-size: 1rem;
+    .btn-group button {
+        width: 100%;
+        flex: 1 1 auto;
     }
-    .header-badges .badge-pro {
-        display: none;
-    }
-    .canvas-panel {
-        min-height: 160px;
-    }
-    .canvas-wrapper {
-        min-height: 120px;
-    }
-    .controls-panel {
-        grid-template-columns: 1fr 1fr;
+    .voice-status {
+        width: 100%;
+        justify-content: center;
     }
 }
 
 /* ============================================================
-   🔥 LAYOUT SPECIFIC FOR 1200x628 (และขนาดใกล้เคียง)
+   จัดการกรณีจอแคบมาก (แนวนอน) - ปรับให้กระชับ
    ============================================================ */
-@media (max-width: 1300px) and (max-height: 750px) {
-    body {
-        padding: 6px;
-        overflow: hidden; /* ไม่ให้เลื่อน */
-        height: 100vh;
-    }
-
-    .app-container {
-        max-width: 1200px;
-        padding: 0 12px;
-        gap: 10px;
-        height: 100vh;
-        max-height: 628px;
-        overflow: hidden;
-    }
-
-    /* หัวให้เล็กลง */
+@media (max-width: 600px) and (orientation: landscape) {
     .app-header {
-        padding: 6px 14px;
-        border-radius: 12px;
-        gap: 6px;
-    }
-    .logo-icon {
-        font-size: 1.4rem;
-    }
-    .logo-text h1 {
-        font-size: 1.1rem;
+        flex-wrap: nowrap;
+        padding: 0.1rem 0.4rem;
     }
     .logo-text p {
-        font-size: 0.55rem;
-        letter-spacing: 2px;
-    }
-    .badge-pro {
-        font-size: 0.55rem;
-        padding: 3px 10px;
-    }
-    .status-tag {
-        font-size: 0.55rem;
-        padding: 3px 10px;
-    }
-    .status-tag .dot {
-        width: 6px;
-        height: 6px;
-    }
-
-    /* Canvas panel ให้มีพื้นที่มากขึ้น */
-    .canvas-panel {
-        padding: 8px;
-        border-radius: 12px;
-        min-height: 0; /* ให้ flex จัดการ */
-        flex: 2; /* ใหญ่กว่าคอนโทรล */
-    }
-    .canvas-wrapper {
-        min-height: 120px;
-        border-radius: 10px;
-    }
-
-    /* Controls panel จัด 3 คอลัมน์ ให้กะทัดรัด */
-    .controls-panel {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        flex: 1;
-    }
-
-    .card {
-        padding: 6px 10px;
-        border-radius: 12px;
-    }
-    .card-title {
-        font-size: 0.6rem;
-        margin-bottom: 4px;
-        padding-left: 6px;
-    }
-    .slider-group {
-        margin-bottom: 4px;
-    }
-    .slider-header {
-        font-size: 0.55rem;
-        margin-bottom: 2px;
-    }
-    .value-badge {
-        font-size: 0.55rem;
-        padding: 1px 6px;
-    }
-    input[type="range"] {
-        height: 3px;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-        width: 16px;
-        height: 16px;
-    }
-    input[type="range"]::-moz-range-thumb {
-        width: 16px;
-        height: 16px;
-    }
-    select {
-        font-size: 0.6rem;
-        padding: 6px 10px;
-        min-height: 30px;
-        margin: 4px 0 2px;
-    }
-
-    /* ปุ่ม */
-    .btn-group {
-        gap: 4px;
-        margin-top: 4px;
-    }
-    button {
-        font-size: 0.55rem;
-        padding: 4px 8px;
-        min-height: 28px;
-        min-width: 28px;
-        border-radius: 20px;
-        flex: 1 1 auto;
-    }
-    button.sci-fi-btn {
-        width: 40px;
-        height: 40px;
-        flex: 0 0 40px;
-    }
-    button.sci-fi-btn .icon {
-        font-size: 1.2rem;
-    }
-    button.sci-fi-btn .scanline,
-    button.sci-fi-btn .particle {
-        display: none; /* ลดความซับซ้อนในจอเล็ก */
-    }
-
-    .voice-status {
-        font-size: 0.55rem;
-        height: 28px;
-        padding: 0 10px;
-    }
-
-    .progress-container {
-        height: 4px;
-        margin-top: 4px;
-    }
-
-    /* Floating zoom ปรับให้เล็กลงและย้ายไปมุมล่าง */
-    .floating-zoom {
-        bottom: 6px;
-        right: 6px;
-        padding: 4px 8px;
-        border-radius: 12px;
-        gap: 4px;
-        font-size: 0.6rem;
-    }
-    .floating-zoom .zoom-label {
         display: none;
     }
-    .floating-zoom .zoom-value {
-        min-width: 30px;
-        font-size: 0.6rem;
+    .logo-icon {
+        font-size: 1rem;
     }
-    .floating-zoom button {
-        min-height: 24px;
-        min-width: 24px;
+    .logo-text h1 {
+        font-size: 0.7rem;
+    }
+    .badge-pro {
+        font-size: 0.4rem;
+        padding: 0.05rem 0.3rem;
+    }
+    .status-tag {
+        font-size: 0.4rem;
+        padding: 0.05rem 0.3rem;
+    }
+    .canvas-panel {
+        min-height: 80px;
+    }
+    .controls-panel {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 0.2rem;
+    }
+    .card {
+        padding: 0.1rem 0.2rem;
+    }
+    .card-title {
+        font-size: 0.4rem;
+        margin-bottom: 0.05rem;
+    }
+    .slider-header {
+        font-size: 0.35rem;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+        width: 10px;
+        height: 10px;
+    }
+    button {
+        font-size: 0.4rem;
+        padding: 0.05rem 0.2rem;
+        min-height: 18px;
+        min-width: 18px;
+    }
+    button.sci-fi-btn {
+        width: 26px;
+        height: 26px;
+    }
+    button.sci-fi-btn .icon {
         font-size: 0.8rem;
-        padding: 2px 6px;
-    }
-
-    /* ลดขนาดการ์ดขอบ */
-    .card::after {
-        width: 2px;
-    }
-    .canvas-panel::before {
-        border-width: 1px;
     }
 }

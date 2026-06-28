@@ -1017,7 +1017,7 @@
         return recog;
     }
 
-    function startListening(micBtn, inputField, recognition, onResult, onEnd) {
+    function startListening(micBtn, inputField, recognition) {
         if (!recognition) return;
         try {
             recognition.start();

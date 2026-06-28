@@ -1,6 +1,8 @@
 // ============================================================
 // script.js - PixelForge เวอร์ชันมือถือ
 // ปรับปรุง: UI Mobile, Touch, Web Worker, OffscreenCanvas, Cache
+// เพิ่ม: แอนิเมชั่นเวทมนตร์ลบพื้นหลัง (Magic Overlay)
+// รวมระบบ Cleanup และเชื่อมต่อกับ Extra (ถ้ามี)
 // ============================================================
 (function() {
     'use strict';
@@ -76,8 +78,154 @@
     let pendingRender = false;
 
     // --- Constants ---
-    const MAX_IMAGE_SIZE = 1200;          // ขนาดสูงสุดของภาพต้นฉบับ (ลดลงจาก 1200 เพื่อประหยัดหน่วยความจำ)
-    const WORKER_URL = createWorkerBlob(); // สร้าง Web Worker แบบ Inline
+    const MAX_IMAGE_SIZE = 1200;
+    const WORKER_URL = createWorkerBlob();
+
+    // ============================================================
+    // 0. Magic Overlay (เวทมนตร์ลบพื้นหลัง)
+    // ============================================================
+    function injectMagicStyles() {
+        if (document.getElementById('magic-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'magic-styles';
+        style.textContent = `
+            #magic-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(8px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 999999;
+                animation: magicFadeIn 0.6s ease;
+                pointer-events: none;
+            }
+            @keyframes magicFadeIn {
+                from { opacity: 0; transform: scale(1.1); }
+                to { opacity: 1; transform: scale(1); }
+            }
+            .magic-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+                text-align: center;
+            }
+            .magic-circle {
+                position: relative;
+                width: 180px;
+                height: 180px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .magic-ring {
+                position: absolute;
+                border-radius: 50%;
+                border: 3px solid transparent;
+                box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+                animation: ringSpin 2s linear infinite;
+            }
+            .ring1 {
+                width: 100%;
+                height: 100%;
+                border-top: 4px solid #00f3ff;
+                border-right: 4px solid #b026ff;
+                animation-duration: 1.8s;
+            }
+            .ring2 {
+                width: 75%;
+                height: 75%;
+                border-bottom: 4px solid #ff00e5;
+                border-left: 4px solid #ffe600;
+                animation-duration: 2.5s;
+                animation-direction: reverse;
+            }
+            .ring3 {
+                width: 50%;
+                height: 50%;
+                border-top: 3px solid #ffe600;
+                border-right: 3px solid #ff00e5;
+                animation-duration: 1.2s;
+                opacity: 0.7;
+            }
+            @keyframes ringSpin {
+                to { transform: rotate(360deg); }
+            }
+            .magic-wand {
+                font-size: 56px;
+                z-index: 2;
+                filter: drop-shadow(0 0 30px rgba(0, 243, 255, 0.8));
+                animation: wandFloat 1.8s ease-in-out infinite;
+                transform-origin: bottom center;
+            }
+            @keyframes wandFloat {
+                0%, 100% { transform: translateY(0) rotate(-5deg); }
+                50% { transform: translateY(-25px) rotate(10deg); }
+            }
+            .magic-text {
+                color: #e2e8f0;
+                font-size: clamp(1.2rem, 3vw, 1.8rem);
+                font-weight: 600;
+                letter-spacing: 4px;
+                text-shadow: 0 0 30px rgba(0, 243, 255, 0.6), 0 0 60px rgba(176, 38, 255, 0.3);
+                animation: textPulse 1.5s ease-in-out infinite;
+                font-family: 'Inter', 'Rajdhani', sans-serif;
+            }
+            @keyframes textPulse {
+                0%, 100% { opacity: 1; transform: scale(1); }
+                50% { opacity: 0.7; transform: scale(1.02); }
+            }
+            .magic-sparkles {
+                font-size: clamp(1rem, 2vw, 1.4rem);
+                color: #ffe600;
+                letter-spacing: 12px;
+                animation: sparkleTwinkle 1.2s ease-in-out infinite alternate;
+            }
+            @keyframes sparkleTwinkle {
+                0% { opacity: 0.3; transform: scale(0.8); }
+                100% { opacity: 1; transform: scale(1.2); }
+            }
+            @media (max-width: 480px) {
+                .magic-circle { width: 120px; height: 120px; }
+                .magic-wand { font-size: 40px; }
+                .magic-text { font-size: 1rem; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    function showMagicOverlay() {
+        if (document.getElementById('magic-overlay')) return;
+        const overlay = document.createElement('div');
+        overlay.id = 'magic-overlay';
+        overlay.innerHTML = `
+            <div class="magic-container">
+                <div class="magic-circle">
+                    <div class="magic-ring ring1"></div>
+                    <div class="magic-ring ring2"></div>
+                    <div class="magic-ring ring3"></div>
+                    <div class="magic-wand">🪄</div>
+                </div>
+                <div class="magic-text">✨ กำลังลบพื้นหลังให้ครับเจ้านาย... ✨</div>
+                <div class="magic-sparkles">✦ ✧ ★ ✦ ✧</div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    }
+
+    function hideMagicOverlay() {
+        const overlay = document.getElementById('magic-overlay');
+        if (overlay) {
+            overlay.style.opacity = '0';
+            overlay.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => overlay.remove(), 500);
+        }
+    }
 
     // ============================================================
     // 1. สร้าง Web Worker (Inline Blob)
@@ -191,7 +339,6 @@
                     }
                 }
 
-                // ส่งผลลัพธ์กลับ
                 const result = new ImageData(data, w, h);
                 self.postMessage({ result: result }, [result.data.buffer]);
             };
@@ -207,19 +354,23 @@
             worker = new Worker(WORKER_URL);
             worker.onmessage = function(e) {
                 const result = e.data.result;
-                // นำผลลัพธ์จาก worker มาแสดง
                 if (result) {
-                    // ใช้ OffscreenCanvas ถ้ารองรับ
-                    if (typeof OffscreenCanvas !== 'undefined' && canvas.transferControlToOffscreen) {
-                        // กรณีใช้ OffscreenCanvas อยู่แล้ว (เราจะไม่ใช้เพื่อความง่าย)
+                    const transformed = applyTransformations(result, rotation, flipH, flipV);
+                    if (canvas.width !== transformed.width || canvas.height !== transformed.height) {
+                        canvas.width = transformed.width;
+                        canvas.height = transformed.height;
                     }
-                    // นำ data ไปใส่ใน canvas หลัก
-                    ctx.putImageData(result, 0, 0);
-                    currentImageData = result;
+                    ctx.putImageData(transformed, 0, 0);
+                    currentImageData = transformed;
                     isProcessing = false;
-                    progressFill.style.width = '0%';
-                    updateStatus('✅ พร้อมใช้งาน', result.width, result.height);
+                    progressFill.style.width = '100%';
+                    setTimeout(() => { progressFill.style.width = '0%'; }, 200);
+                    updateStatus('✅ แสดงผล', transformed.width, transformed.height);
                     updateCanvasTransform();
+                    if (pendingRender) {
+                        pendingRender = false;
+                        renderFull();
+                    }
                 }
             };
             worker.onerror = function(err) {
@@ -242,7 +393,6 @@
             return;
         }
 
-        // ถ้ามีการเรียกซ้ำให้ยกเลิกอันก่อน
         if (renderTimeout) {
             cancelAnimationFrame(renderTimeout);
             renderTimeout = null;
@@ -252,57 +402,18 @@
             isProcessing = true;
             progressFill.style.width = '30%';
 
-            // ส่งงานไปยัง Web Worker
             const worker = getWorker();
             const baseData = new Uint8ClampedArray(originalImageData.data);
             const srcData = new ImageData(baseData, originalImageData.width, originalImageData.height);
 
-            // ส่งข้อมูลไป worker พร้อมพารามิเตอร์
             worker.postMessage({
                 imageData: srcData,
                 adjust: adjust,
                 filter: currentFilter
             }, [srcData.data.buffer]);
-
-            // Worker จะตอบกลับเมื่อเสร็จ
-            // ส่วนการหมุน/พลิก จะทำใน main thread เพราะ worker ไม่จำเป็น
-            // แต่เราจะรอผลจาก worker แล้วค่อยแปลง
-            // เราแก้ไข: worker จะส่งผลลัพธ์ที่ผ่าน adjust+filter มาให้
-            // จากนั้นเราจะทำการหมุน/พลิก และใส่ลง canvas
-            // ดังนั้นเราจะเก็บ callback ไว้
-            worker._pendingResolve = function(resultData) {
-                // รับผลลัพธ์จาก worker แล้วนำไปหมุน/พลิก
-                const transformed = applyTransformations(resultData, rotation, flipH, flipV);
-                // กำหนดขนาด canvas ตาม transformed
-                if (canvas.width !== transformed.width || canvas.height !== transformed.height) {
-                    canvas.width = transformed.width;
-                    canvas.height = transformed.height;
-                }
-                ctx.putImageData(transformed, 0, 0);
-                currentImageData = transformed;
-                isProcessing = false;
-                progressFill.style.width = '100%';
-                setTimeout(() => { progressFill.style.width = '0%'; }, 200);
-                updateStatus('✅ แสดงผล', transformed.width, transformed.height);
-                updateCanvasTransform();
-                // เช็คว่ามี pending หรือไม่
-                if (pendingRender) {
-                    pendingRender = false;
-                    renderFull();
-                }
-            };
-
-            // กำหนด onmessage ให้เรียก callback นี้
-            worker.onmessage = function(e) {
-                const result = e.data.result;
-                if (result && worker._pendingResolve) {
-                    worker._pendingResolve(result);
-                }
-            };
         });
     }
 
-    // --- ฟังก์ชันหมุน/พลิก (ทำงานใน main thread) ---
     function applyTransformations(imageData, rot, flipHFlag, flipVFlag) {
         const w = imageData.width;
         const h = imageData.height;
@@ -388,7 +499,6 @@
 
     canvas.addEventListener('touchstart', function(e) {
         if (e.touches.length === 2) {
-            // Pinch start
             const t1 = e.touches[0], t2 = e.touches[1];
             const dx = t1.clientX - t2.clientX;
             const dy = t1.clientY - t2.clientY;
@@ -398,7 +508,6 @@
             initialPanY = panY;
             e.preventDefault();
         } else if (e.touches.length === 1) {
-            // Pan start
             isDragging = true;
             dragStartX = e.touches[0].clientX;
             dragStartY = e.touches[0].clientY;
@@ -410,18 +519,12 @@
 
     canvas.addEventListener('touchmove', function(e) {
         if (e.touches.length === 2) {
-            // Pinch
             const t1 = e.touches[0], t2 = e.touches[1];
             const dx = t1.clientX - t2.clientX;
             const dy = t1.clientY - t2.clientY;
             const dist = Math.hypot(dx, dy);
             const delta = dist / lastPinchDist;
             zoom = Math.min(3, Math.max(0.2, initialZoom * delta));
-            // คำนวณจุดกลาง pinch เพื่อปรับ pan
-            const cx = (t1.clientX + t2.clientX) / 2;
-            const cy = (t1.clientY + t2.clientY) / 2;
-            // ปรับ pan ให้ซูมเข้าที่จุดนั้น (ไม่บังคับ)
-            // (implementation ซับซ้อน ปล่อยให้ zoom อยู่กึ่งกลาง)
             panX = initialPanX;
             panY = initialPanY;
             updateCanvasTransform();
@@ -438,7 +541,6 @@
 
     canvas.addEventListener('touchend', function(e) {
         isDragging = false;
-        // รีเซ็ต pinch ถ้าเหลือ 1 นิ้ว
     });
 
     // ============================================================
@@ -450,7 +552,6 @@
             const img = new Image();
             img.onload = function() {
                 let w = img.width, h = img.height;
-                // ปรับขนาดให้ไม่เกิน MAX_IMAGE_SIZE
                 if (w > MAX_IMAGE_SIZE || h > MAX_IMAGE_SIZE) {
                     const ratio = Math.min(MAX_IMAGE_SIZE / w, MAX_IMAGE_SIZE / h);
                     w = Math.round(w * ratio);
@@ -459,7 +560,6 @@
                 canvas.width = w;
                 canvas.height = h;
                 ctx.clearRect(0, 0, w, h);
-                // พื้นหลังขาว
                 ctx.fillStyle = '#ffffff';
                 ctx.fillRect(0, 0, w, h);
                 ctx.drawImage(img, 0, 0, w, h);
@@ -482,7 +582,7 @@
     }
 
     // ============================================================
-    // 6. ลบพื้นหลัง (ปรับขนาดก่อนส่งเข้าโมเดล)
+    // 6. ลบพื้นหลัง (ปรับขนาดก่อนส่งเข้าโมเดล) + Magic Overlay
     // ============================================================
     removeBgBtn.addEventListener('click', async function() {
         if (!originalImageData) {
@@ -493,8 +593,10 @@
         this.textContent = '⏳ กำลังโหลดโมเดล...';
         progressFill.style.width = '0%';
 
+        // ✨ เริ่มแอนิเมชั่นเวทมนตร์
+        showMagicOverlay();
+
         try {
-            // ปรับขนาดภาพให้เล็กลงเพื่อลดเวลา
             const tempCanvas = document.createElement('canvas');
             const maxSize = 800;
             let w = originalImageData.width, h = originalImageData.height;
@@ -506,20 +608,17 @@
             tempCanvas.width = w;
             tempCanvas.height = h;
             const tempCtx = tempCanvas.getContext('2d');
-            // วาดภาพต้นฉบับลง canvas ย่อ
             const srcCanvas = document.createElement('canvas');
             srcCanvas.width = originalImageData.width;
             srcCanvas.height = originalImageData.height;
             const srcCtx = srcCanvas.getContext('2d');
             srcCtx.putImageData(originalImageData, 0, 0);
             tempCtx.drawImage(srcCanvas, 0, 0, w, h);
-            const resizedData = tempCtx.getImageData(0, 0, w, h);
 
-            // เรียกโมดูลลบพื้นหลัง (dynamic import)
+            // โหลดโมดูลลบพื้นหลัง
             const module = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal/+esm');
             const removeFn = module.removeBackground;
 
-            // แปลงเป็น Blob
             const blob = await new Promise(res => tempCanvas.toBlob(res, 'image/png'));
 
             const resultBlob = await removeFn(blob, {
@@ -532,7 +631,6 @@
                 }
             });
 
-            // โหลดภาพที่ได้
             const img = new Image();
             const url = URL.createObjectURL(resultBlob);
             await new Promise((resolve, reject) => {
@@ -541,8 +639,6 @@
                 img.src = url;
             });
 
-            // ปรับขนาดกลับเป็นขนาดเดิม? (ขยาย)
-            // เพื่อความคมชัด ให้ขยายกลับเป็นขนาดต้นฉบับ
             const finalCanvas = document.createElement('canvas');
             finalCanvas.width = originalImageData.width;
             finalCanvas.height = originalImageData.height;
@@ -550,10 +646,8 @@
             finalCtx.drawImage(img, 0, 0, finalCanvas.width, finalCanvas.height);
             let resultData = finalCtx.getImageData(0, 0, finalCanvas.width, finalCanvas.height);
 
-            // ปรับขอบ (edge refinement) เล็กน้อย
             resultData = refineEdges(resultData, 2);
 
-            // แทนที่ originalImageData
             originalImageData = resultData;
             canvas.width = resultData.width;
             canvas.height = resultData.height;
@@ -574,12 +668,13 @@
             progressFill.style.width = '0%';
             this.textContent = '✨ ลบพื้นหลัง';
         } finally {
+            // ✨ ซ่อนแอนิเมชั่นเมื่อเสร็จ (ทั้งสำเร็จหรือผิดพลาด)
+            hideMagicOverlay();
             this.disabled = false;
         }
     });
 
     function refineEdges(imageData, radius = 2) {
-        // ฟังก์ชันปรับขอบเหมือนเดิม (ย่อ)
         const data = imageData.data;
         const w = imageData.width, h = imageData.height;
         const total = w * h;
@@ -652,7 +747,7 @@
     }
 
     // ============================================================
-    // 8. Event Listeners (ปรับให้ใช้ renderFull แบบ throttle)
+    // 8. Event Listeners
     // ============================================================
     function onSliderChange() {
         if (renderTimeout) {
@@ -727,7 +822,6 @@
         }
     });
 
-    // --- Upload ---
     uploadBtn.addEventListener('click', function() {
         const input = document.createElement('input');
         input.type = 'file';
@@ -740,7 +834,6 @@
         input.click();
     });
 
-    // --- Export ---
     exportBtn.addEventListener('click', function() {
         if (!originalImageData) return;
         const link = document.createElement('a');
@@ -749,7 +842,6 @@
         link.click();
     });
 
-    // --- Drag & Drop (Desktop) ---
     wrapper.addEventListener('dragover', function(e) {
         e.preventDefault();
         wrapper.classList.add('drag-over');
@@ -767,7 +859,6 @@
         }
     });
 
-    // --- Zoom Buttons ---
     zoomInBtn.addEventListener('click', function() {
         zoom = Math.min(zoom + 0.1, 3);
         updateCanvasTransform();
@@ -781,9 +872,6 @@
         panX = 0; panY = 0;
         updateCanvasTransform();
     });
-
-    // --- Voice (ปรับให้ใช้ได้) ---
-    // (คงเดิมจากต้นฉบับ)
 
     // ============================================================
     // 9. โหลดภาพเริ่มต้น
@@ -815,8 +903,58 @@
     }
 
     // ============================================================
-    // 10. เริ่มต้น
+    // 10. ฟังก์ชัน Cleanup (เชื่อมต่อกับ Extra ถ้ามี)
     // ============================================================
+    function cleanupResources() {
+        console.log('[PixelForge] Cleaning up resources...');
+
+        if (worker) {
+            try {
+                worker.terminate();
+                worker = null;
+            } catch (e) {}
+        }
+
+        if (renderTimeout) {
+            cancelAnimationFrame(renderTimeout);
+            renderTimeout = null;
+        }
+
+        if (WORKER_URL) {
+            try {
+                URL.revokeObjectURL(WORKER_URL);
+            } catch (e) {}
+        }
+
+        if (window.Extra && typeof window.Extra.cleanupGarbage === 'function') {
+            window.Extra.cleanupGarbage();
+        }
+
+        originalImageData = null;
+        currentImageData = null;
+        originalFile = null;
+
+        const imgs = document.querySelectorAll('img');
+        imgs.forEach(img => {
+            if (img.src && img.src.startsWith('blob:')) {
+                URL.revokeObjectURL(img.src);
+            }
+        });
+
+        // ลบ Magic Overlay ถ้ายังค้าง
+        hideMagicOverlay();
+
+        console.log('[PixelForge] Cleanup complete.');
+    }
+
+    window.addEventListener('beforeunload', cleanupResources);
+
+    // ============================================================
+    // 11. เริ่มต้น
+    // ============================================================
+    // Inject Magic Styles
+    injectMagicStyles();
+
     loadDefaultImage();
     updateCanvasTransform();
 
@@ -825,10 +963,9 @@
     });
     resizeObserver.observe(wrapper);
 
-    // ปรับการแสดงผลเมื่อเปลี่ยนขนาดหน้าจอ
     window.addEventListener('resize', function() {
         updateCanvasTransform();
     });
 
-    console.log('🚀 PixelForge Mobile Ready');
+    console.log('🚀 PixelForge Mobile Ready (with Magic Overlay)');
 })();
