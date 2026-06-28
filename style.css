@@ -1,7 +1,9 @@
 /* ============================================================
-   ตัวแปรหลัก - ธีมโฮโลแกรม
+   ตัวแปรหลัก - ธีมโฮโลแกรม (ปรับพื้นหลังการ์ดเป็น 225,255,255)
+   ปรับขนาดโดยรวมให้เล็กลง (Compact) + รองรับมือถือ/แท็บเล็ต
    ============================================================ */
 :root {
+    /* สีนีออนหลักของธีม */
     --holo-cyan: #00f3ff;
     --holo-magenta: #ff00e5;
     --holo-purple: #b026ff;
@@ -9,6 +11,7 @@
     --holo-gold: #ffe600;
     --holo-red: #ff0055;
 
+    /* ✅ สีพื้นหลังและพื้นผิว */
     --bg-deep: #0a0a1a;
     --bg-card: rgba(225, 255, 255, 0.15);
     --border-glow: rgba(225, 255, 255, 0.2);
@@ -17,7 +20,7 @@
 
     --font-display: 'Inter', 'Rajdhani', sans-serif;
 
-    /* Fluid - ปรับอัตโนมัติ */
+    /* ตัวแปรแบบ Fluid - ปรับให้เล็กลง */
     --font-size-base: clamp(0.5rem, 1.6vw, 0.8rem);
     --spacing-base: clamp(0.25rem, 1vw, 0.7rem);
     --radius-base: clamp(0.4rem, 1.2vw, 0.9rem);
@@ -38,6 +41,7 @@ body {
     background: 
         url('https://od.lk/s/N18yODQzMzIwNzdf/6db9d034-1022-40c3-b023-a0749ab58b01.png') center/cover no-repeat fixed,
         var(--bg-deep);
+    
     font-family: var(--font-display);
     color: var(--text-primary);
     padding: clamp(0.2rem, 1.2vw, 0.8rem);
@@ -45,8 +49,9 @@ body {
     display: flex;
     flex-direction: column;
     position: relative;
+    box-shadow: inset 0 0 100px rgba(255, 255, 255, 0.08);
     font-size: var(--font-size-base);
-    /* ปรับปรุงประสิทธิภาพบนมือถือ */
+    /* ✅ ปรับปรุงประสิทธิภาพบนมือถือ */
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     -webkit-font-smoothing: antialiased;
@@ -99,13 +104,13 @@ body::before {
     position: relative;
     z-index: 2;
     padding: 0 clamp(0.3rem, 1.2vw, 1rem);
-    /* iOS Safe Area */
+    /* ✅ iOS Safe Area */
     padding-top: env(safe-area-inset-top, 0);
     padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
 /* ============================================================
-   ส่วนหัว (HEADER) - ยืดหยุ่น
+   ส่วนหัว (HEADER) - ดีไซน์โฮโลแกรม (ยืดหยุ่น)
    ============================================================ */
 .app-header {
     display: flex;
@@ -115,7 +120,7 @@ body::before {
     gap: clamp(0.2rem, 1vw, 0.6rem);
     background: rgba(225, 255, 255, 0.08);
     backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px); /* ✅ Safari */
     padding: clamp(0.25rem, 0.8vw, 0.6rem) clamp(0.4rem, 1.2vw, 0.9rem);
     border-radius: var(--radius-base);
     border: 1px solid rgba(225, 255, 255, 0.15);
@@ -125,10 +130,918 @@ body::before {
     overflow: hidden;
 }
 
-/* ... (ส่วนที่เหลือของ style.css เหมือนเดิม) ... */
+.app-header::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, 
+        transparent, 
+        rgba(0, 243, 255, 0.03), 
+        transparent, 
+        rgba(255, 0, 229, 0.03), 
+        transparent);
+    animation: spin-glow 15s linear infinite;
+    pointer-events: none;
+    will-change: transform;
+}
+
+@keyframes spin-glow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.2rem, 1vw, 0.6rem);
+    z-index: 2;
+    flex: 1 1 auto;
+    min-width: 80px;
+}
+
+.logo-icon {
+    font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+    filter: drop-shadow(0 0 8px var(--holo-cyan));
+    animation: pulse-icon 2s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+@keyframes pulse-icon {
+    0%, 100% { filter: drop-shadow(0 0 8px var(--holo-cyan)); }
+    50% { filter: drop-shadow(0 0 18px var(--holo-magenta)); }
+}
+
+.logo-text h1 {
+    font-size: clamp(0.8rem, 3vw, 1.4rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--holo-cyan), var(--holo-purple), var(--holo-magenta));
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradient-shift 4s ease-in-out infinite alternate;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+}
+
+@keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+
+.logo-text p {
+    font-size: clamp(0.4rem, 1vw, 0.6rem);
+    color: var(--holo-cyan);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    text-shadow: 0 0 8px rgba(0, 243, 255, 0.4);
+    white-space: nowrap;
+}
+
+.header-badges {
+    display: flex;
+    gap: clamp(0.2rem, 0.8vw, 0.5rem);
+    flex-wrap: wrap;
+    align-items: center;
+    z-index: 2;
+    flex: 0 1 auto;
+}
+
+.badge-pro {
+    background: rgba(255, 0, 229, 0.12);
+    border: 1px solid var(--holo-magenta);
+    padding: 0.15rem 0.5rem;
+    border-radius: 30px;
+    font-size: clamp(0.4rem, 0.9vw, 0.6rem);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    color: var(--holo-cyan);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 15px rgba(255, 0, 229, 0.15);
+    white-space: nowrap;
+}
+
+.status-tag {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    padding: 0.15rem 0.5rem;
+    border-radius: 30px;
+    font-size: clamp(0.4rem, 0.9vw, 0.6rem);
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    color: var(--text-secondary);
+    border: 1px solid rgba(0, 243, 255, 0.15);
+    white-space: nowrap;
+}
+
+.status-tag .dot {
+    width: clamp(4px, 0.7vw, 6px);
+    height: clamp(4px, 0.7vw, 6px);
+    background: var(--holo-cyan);
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 12px var(--holo-cyan);
+    animation: blink-dot 1.5s infinite;
+}
+
+@keyframes blink-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+}
 
 /* ============================================================
-   MEDIA QUERIES - มือถือและแท็บเล็ต
+   พาเนล Canvas (พื้นที่แสดงผล) - ยืดหยุ่น
+   ============================================================ */
+.canvas-panel {
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: var(--radius-base);
+    padding: clamp(0.2rem, 0.8vw, 0.6rem);
+    border: 1px solid rgba(225, 255, 255, 0.12);
+    box-shadow: 0 0 30px rgba(225, 255, 255, 0.03), inset 0 0 30px rgba(225, 255, 255, 0.01);
+    flex: 2 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: clamp(140px, 25vh, 280px);
+    position: relative;
+    overflow: hidden;
+}
+
+.canvas-panel::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    border-radius: var(--radius-base);
+    background: conic-gradient(from 0deg, 
+        transparent 0%, 
+        var(--holo-cyan) 15%, 
+        var(--holo-purple) 30%, 
+        var(--holo-magenta) 55%, 
+        var(--holo-cyan) 80%, 
+        transparent 100%);
+    z-index: -1;
+    animation: spin-border 6s linear infinite;
+    opacity: 0.4;
+    border: 1px solid var(--holo-cyan);
+}
+
+@supports (--angle: 0deg) {
+    .canvas-panel::before {
+        background: conic-gradient(from var(--angle, 0deg), 
+            transparent 0%, 
+            var(--holo-cyan) 15%, 
+            var(--holo-purple) 30%, 
+            var(--holo-magenta) 55%, 
+            var(--holo-cyan) 80%, 
+            transparent 100%);
+    }
+}
+
+@property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@keyframes spin-border {
+    to { --angle: 360deg; }
+}
+
+.canvas-wrapper {
+    position: relative;
+    background: rgba(0, 5, 15, 0.8);
+    border-radius: var(--radius-base);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    min-height: clamp(80px, 18vh, 200px);
+    border: 1px solid rgba(225, 255, 255, 0.08);
+    /* ✅ ป้องกันการ scroll บนมือถือ */
+    touch-action: none;
+}
+
+.canvas-wrapper canvas {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    display: block;
+    cursor: crosshair;
+    object-fit: contain;
+    filter: drop-shadow(0 0 15px rgba(0, 243, 255, 0.08));
+    /* ✅ ปรับปรุงประสิทธิภาพ */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+.drag-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 10, 30, 0.85);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.2rem, 1vw, 0.6rem);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    color: white;
+    border-radius: var(--radius-base);
+    border: 2px dashed var(--holo-cyan);
+    box-shadow: inset 0 0 30px rgba(0, 243, 255, 0.08);
+}
+
+.canvas-wrapper.drag-over .drag-overlay {
+    opacity: 1;
+}
+
+.drag-overlay .icon-big {
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    filter: drop-shadow(0 0 20px var(--holo-cyan));
+    animation: pulse-icon 1.5s infinite;
+}
+
+/* ============================================================
+   พาเนลควบคุม (การ์ดต่างๆ) - Responsive Grid อัตโนมัติ
+   ============================================================ */
+.controls-panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: clamp(0.3rem, 1.2vw, 0.8rem);
+    flex-shrink: 0;
+}
+
+/* ✅ การ์ดหลัก - ยืดหยุ่น */
+.card {
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(225, 255, 255, 0.15);
+    border-radius: var(--radius-base);
+    padding: clamp(0.3rem, 0.8vw, 0.6rem);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(225, 255, 255, 0.03);
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    border-color: var(--holo-cyan);
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.08), inset 0 0 20px rgba(225, 255, 255, 0.03);
+    transform: translateY(-1px);
+}
+
+.card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--holo-cyan), var(--holo-magenta));
+    border-radius: 0 2px 2px 0;
+    box-shadow: 0 0 10px var(--holo-cyan);
+    opacity: 0.5;
+}
+
+.card-title {
+    font-size: clamp(0.5rem, 1.2vw, 0.7rem);
+    font-weight: 600;
+    margin-bottom: clamp(0.15rem, 0.6vh, 0.4rem);
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    color: var(--holo-cyan);
+    padding-left: clamp(0.2rem, 0.6vw, 0.5rem);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+}
+
+.slider-group {
+    margin-bottom: clamp(0.15rem, 0.6vh, 0.4rem);
+}
+.slider-group:last-child {
+    margin-bottom: 0;
+}
+
+.slider-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: clamp(0.45rem, 1vw, 0.65rem);
+    margin-bottom: 1px;
+    color: var(--text-secondary);
+    letter-spacing: 0.3px;
+}
+
+.value-badge {
+    background: rgba(225, 255, 255, 0.08);
+    padding: 0 0.4rem;
+    border-radius: 15px;
+    font-family: 'Courier New', monospace;
+    font-size: clamp(0.45rem, 1vw, 0.65rem);
+    color: var(--holo-cyan);
+    border: 1px solid rgba(225, 255, 255, 0.15);
+}
+
+/* ============================================================
+   สไลด์เลอร์ (Range Slider) - ขนาดอัตโนมัติ
+   ============================================================ */
+input[type="range"] {
+    width: 100%;
+    height: clamp(2px, 0.3vw, 4px);
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(225, 255, 255, 0.12);
+    border-radius: 8px;
+    outline: none;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.4);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: clamp(12px, 2.5vw, 18px);
+    height: clamp(12px, 2.5vw, 18px);
+    background: radial-gradient(circle, var(--holo-cyan), var(--holo-purple));
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 15px var(--holo-cyan), 0 0 40px rgba(0, 243, 255, 0.15);
+    border: 1.5px solid rgba(225, 255, 255, 0.3);
+    transition: 0.15s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px var(--holo-cyan), 0 0 60px var(--holo-magenta);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: clamp(12px, 2.5vw, 18px);
+    height: clamp(12px, 2.5vw, 18px);
+    background: radial-gradient(circle, var(--holo-cyan), var(--holo-purple));
+    border-radius: 50%;
+    cursor: pointer;
+    border: 1.5px solid rgba(225, 255, 255, 0.3);
+    box-shadow: 0 0 15px var(--holo-cyan);
+}
+
+/* ============================================================
+   Select Dropdown - ยืดหยุ่น
+   ============================================================ */
+select {
+    width: 100%;
+    background: rgba(0, 10, 30, 0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(225, 255, 255, 0.15);
+    padding: clamp(0.2rem, 0.8vw, 0.5rem) clamp(0.3rem, 1vw, 0.6rem);
+    border-radius: 30px;
+    color: var(--text-primary);
+    margin: clamp(0.1rem, 0.6vh, 0.3rem) 0 0.1rem;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: clamp(0.5rem, 1.2vw, 0.7rem);
+    transition: 0.2s;
+    min-height: clamp(22px, 3vh, 32px);
+    /* ✅ ป้องกันการ zoom บน iOS */
+    font-size: 16px;
+}
+
+select:hover {
+    border-color: var(--holo-cyan);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.08);
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--holo-magenta);
+    box-shadow: 0 0 20px rgba(255, 0, 229, 0.1);
+}
+
+select option {
+    background: #0a0f1a;
+}
+
+/* ============================================================
+   ปุ่มต่างๆ - ยืดหยุ่นและจัดเรียงอัตโนมัติ
+   ============================================================ */
+.btn-group {
+    display: flex;
+    gap: clamp(0.15rem, 0.8vw, 0.5rem);
+    margin-top: clamp(0.15rem, 0.6vh, 0.4rem);
+    flex-wrap: wrap;
+}
+
+button {
+    padding: clamp(0.2rem, 0.8vw, 0.5rem) clamp(0.4rem, 1.2vw, 0.8rem);
+    border-radius: 30px;
+    border: none;
+    background: rgba(255,255,255,0.06);
+    color: white;
+    cursor: pointer;
+    font-size: clamp(0.5rem, 1.2vw, 0.7rem);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    transition: all 0.2s ease;
+    min-height: clamp(22px, 3vh, 32px);
+    min-width: clamp(22px, 3vh, 32px);
+    flex: 1 1 auto;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-family: var(--font-display);
+    /* ✅ ป้องกันการ zoom บน iOS */
+    touch-action: manipulation;
+}
+
+button.primary {
+    background: linear-gradient(135deg, var(--holo-cyan), var(--holo-purple));
+    color: #05080f;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+}
+button.primary:hover {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.4), 0 0 60px rgba(176, 38, 255, 0.15);
+}
+button.primary:active {
+    transform: translateY(0) scale(0.97);
+}
+
+button.secondary {
+    background: rgba(225, 255, 255, 0.04);
+    color: var(--holo-cyan);
+    border: 1px solid rgba(225, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+button.secondary:hover {
+    background: rgba(225, 255, 255, 0.08);
+    border-color: var(--holo-cyan);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.08);
+}
+
+button.danger {
+    background: linear-gradient(135deg, var(--holo-red), #aa0044);
+    color: white;
+    box-shadow: 0 0 20px rgba(255, 0, 85, 0.2);
+}
+button.danger:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 30px rgba(255, 0, 85, 0.4);
+}
+
+button.warning {
+    background: linear-gradient(135deg, var(--holo-gold), #ff8c00);
+    color: #05080f;
+    box-shadow: 0 0 20px rgba(255, 230, 0, 0.2);
+}
+button.warning:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 30px rgba(255, 230, 0, 0.4);
+}
+
+button.voice-btn {
+    background: linear-gradient(135deg, var(--holo-magenta), var(--holo-purple), var(--holo-cyan));
+    background-size: 300% 300%;
+    color: white;
+    animation: gradient-shift 3s ease-in-out infinite alternate;
+    box-shadow: 0 0 20px rgba(255, 0, 229, 0.2);
+}
+button.voice-btn:hover {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 0 35px rgba(255, 0, 229, 0.4);
+}
+
+button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none !important;
+    filter: grayscale(0.5);
+}
+
+/* ============================================================
+   Sci-Fi Ultimate Button V2 (ขนาดอัตโนมัติ)
+   ============================================================ */
+button.sci-fi-btn {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: radial-gradient(circle at 30% 30%,
+        rgba(0,243,255,0.9),
+        rgba(176,38,255,0.9),
+        rgba(5,10,20,1));
+    box-shadow:
+        0 0 20px rgba(0,243,255,0.3),
+        inset 0 0 15px rgba(255,255,255,0.08);
+    color: #05080f;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    padding: 0;
+    border-radius: 50%;
+    width: clamp(32px, 5vw, 44px);
+    height: clamp(32px, 5vw, 44px);
+    flex: 0 0 auto;
+    touch-action: manipulation;
+}
+
+button.sci-fi-btn::before {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 0deg,
+        var(--holo-cyan),
+        var(--holo-magenta),
+        var(--holo-purple),
+        var(--holo-cyan)
+    );
+    animation: orbit-spin 2.5s linear infinite;
+    filter: blur(1px);
+    opacity: 0.8;
+    z-index: -1;
+    will-change: transform;
+}
+
+button.sci-fi-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle,
+        rgba(255,255,255,0.2),
+        transparent 60%);
+    animation: core-pulse 1.4s ease-in-out infinite;
+    z-index: 0;
+}
+
+button.sci-fi-btn .scanline {
+    position: absolute;
+    width: 120%;
+    height: 2px;
+    background: rgba(0,243,255,0.3);
+    box-shadow: 0 0 15px rgba(0,243,255,0.4);
+    top: -20%;
+    left: -10%;
+    transform: rotate(25deg);
+    animation: scan-move 1.8s linear infinite;
+    z-index: 1;
+    pointer-events: none;
+}
+
+button.sci-fi-btn .particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: var(--holo-cyan);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    animation: particle-float 2s infinite ease-in-out;
+    z-index: 1;
+    pointer-events: none;
+}
+
+button.sci-fi-btn .icon {
+    position: relative;
+    z-index: 2;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    filter: drop-shadow(0 0 10px var(--holo-cyan));
+    line-height: 1;
+}
+
+button.sci-fi-btn:hover {
+    transform: scale(1.1);
+    box-shadow:
+        0 0 30px rgba(0,243,255,0.5),
+        0 0 60px rgba(255,0,229,0.2);
+}
+button.sci-fi-btn:active {
+    transform: scale(0.9);
+}
+
+@keyframes orbit-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+@keyframes core-pulse {
+    0%,100% { transform: scale(0.9); opacity: 0.4; }
+    50% { transform: scale(1.2); opacity: 1; }
+}
+@keyframes scan-move {
+    0% { top: -20%; opacity: 0; }
+    50% { opacity: 1; }
+    100% { top: 120%; opacity: 0; }
+}
+@keyframes particle-float {
+    0% { transform: translate(-8px, -8px); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translate(8px, 8px); opacity: 0; }
+}
+
+/* ============================================================
+   Voice Status - ยืดหยุ่น
+   ============================================================ */
+.voice-status {
+    background: rgba(0, 10, 30, 0.5);
+    padding: 0 clamp(0.2rem, 0.8vw, 0.5rem);
+    border-radius: 30px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-size: clamp(0.4rem, 1vw, 0.6rem);
+    height: clamp(22px, 3vh, 32px);
+    color: var(--holo-cyan);
+    border: 1px solid rgba(225, 255, 255, 0.12);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+/* ============================================================
+   Progress Bar
+   ============================================================ */
+.progress-container {
+    background: rgba(225, 255, 255, 0.04);
+    border-radius: 30px;
+    height: clamp(3px, 0.4vw, 4px);
+    margin-top: clamp(0.15rem, 0.6vh, 0.3rem);
+    overflow: hidden;
+    border: 1px solid rgba(225, 255, 255, 0.08);
+}
+
+.progress-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--holo-cyan), var(--holo-magenta));
+    box-shadow: 0 0 15px var(--holo-cyan);
+    transition: width 0.25s ease;
+}
+
+/* ============================================================
+   Floating Zoom - ยืดหยุ่นและอยู่มุมล่าง
+   ============================================================ */
+.floating-zoom {
+    position: fixed;
+    bottom: clamp(0.3rem, 1.5vh, 0.8rem);
+    right: clamp(0.3rem, 1.2vw, 0.8rem);
+    background: rgba(5, 10, 20, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: clamp(0.1rem, 0.6vw, 0.4rem) clamp(0.25rem, 1vw, 0.6rem);
+    border-radius: clamp(0.5rem, 1.2vw, 0.9rem);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(225, 255, 255, 0.03);
+    border: 1px solid rgba(225, 255, 255, 0.08);
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: clamp(0.15rem, 0.8vw, 0.4rem);
+    font-size: clamp(0.5rem, 1.2vw, 0.7rem);
+    flex-wrap: wrap;
+    justify-content: center;
+    /* ✅ ป้องกันการชนกับ Safe Area */
+    margin-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.floating-zoom.hidden {
+    opacity: 0;
+    transform: scale(0.8);
+    pointer-events: none;
+}
+
+.floating-zoom .zoom-label {
+    color: var(--text-secondary);
+    font-size: clamp(0.4rem, 0.8vw, 0.6rem);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.floating-zoom .zoom-value {
+    font-weight: 600;
+    color: var(--holo-cyan);
+    min-width: clamp(20px, 3vw, 32px);
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+}
+
+.floating-zoom button {
+    flex: 0 0 auto;
+    padding: 0 clamp(0.1rem, 0.6vw, 0.3rem);
+    border-radius: 20px;
+    background: rgba(225, 255, 255, 0.04);
+    color: var(--holo-cyan);
+    border: 1px solid rgba(225, 255, 255, 0.15);
+    font-size: clamp(0.6rem, 1.5vw, 0.9rem);
+    cursor: pointer;
+    transition: 0.15s;
+    line-height: 1.4;
+    text-transform: none;
+    letter-spacing: 0;
+    min-height: clamp(20px, 2.5vh, 28px);
+    min-width: clamp(20px, 2.5vh, 28px);
+    touch-action: manipulation;
+}
+.floating-zoom button:hover {
+    background: rgba(225, 255, 255, 0.08);
+    border-color: var(--holo-cyan);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
+}
+
+/* ============================================================
+   Scrollbar
+   ============================================================ */
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-deep);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--holo-cyan);
+    border-radius: 8px;
+    box-shadow: 0 0 15px var(--holo-cyan);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--holo-magenta);
+    box-shadow: 0 0 20px var(--holo-magenta);
+}
+
+/* ============================================================
+   MAGIC OVERLAY (เวทมนตร์ลบพื้นหลัง)
+   ============================================================ */
+#magic-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    animation: magicFadeIn 0.6s ease;
+    pointer-events: none;
+}
+@keyframes magicFadeIn {
+    from { opacity: 0; transform: scale(1.1); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.magic-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+}
+
+/* วงแหวนเวทมนตร์ */
+.magic-circle {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.magic-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+    animation: ringSpin 2s linear infinite;
+}
+.ring1 {
+    width: 100%;
+    height: 100%;
+    border-top: 4px solid #00f3ff;
+    border-right: 4px solid #b026ff;
+    animation-duration: 1.8s;
+}
+.ring2 {
+    width: 75%;
+    height: 75%;
+    border-bottom: 4px solid #ff00e5;
+    border-left: 4px solid #ffe600;
+    animation-duration: 2.5s;
+    animation-direction: reverse;
+}
+.ring3 {
+    width: 50%;
+    height: 50%;
+    border-top: 3px solid #ffe600;
+    border-right: 3px solid #ff00e5;
+    animation-duration: 1.2s;
+    opacity: 0.7;
+}
+
+@keyframes ringSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* ไม้กายสิทธิ์ */
+.magic-wand {
+    font-size: 56px;
+    z-index: 2;
+    filter: drop-shadow(0 0 30px rgba(0, 243, 255, 0.8));
+    animation: wandFloat 1.8s ease-in-out infinite;
+    transform-origin: bottom center;
+}
+@keyframes wandFloat {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-25px) rotate(10deg); }
+}
+
+/* ข้อความเสก */
+.magic-text {
+    color: #e2e8f0;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-shadow: 0 0 30px rgba(0, 243, 255, 0.6), 0 0 60px rgba(176, 38, 255, 0.3);
+    animation: textPulse 1.5s ease-in-out infinite;
+    font-family: 'Inter', 'Rajdhani', sans-serif;
+}
+@keyframes textPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.02); }
+}
+
+/* ประกายดาว */
+.magic-sparkles {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: #ffe600;
+    letter-spacing: 12px;
+    animation: sparkleTwinkle 1.2s ease-in-out infinite alternate;
+}
+@keyframes sparkleTwinkle {
+    0% { opacity: 0.3; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1.2); }
+}
+
+/* ============================================================
+   prefers-reduced-motion (คงไว้)
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    body::before,
+    .app-header::after,
+    .sci-fi-btn::before,
+    .sci-fi-btn .scanline,
+    .sci-fi-btn .particle,
+    #magic-overlay,
+    .magic-ring,
+    .magic-wand,
+    .magic-text,
+    .magic-sparkles {
+        animation: none !important;
+    }
+    .logo-icon,
+    .status-tag .dot {
+        animation: none !important;
+    }
+}
+
+/* ============================================================
+   MEDIA QUERIES - มือถือและแท็บเล็ต (ปรับปรุงใหม่)
    ============================================================ */
 
 /* -------- แท็บเล็ต (iPad, Android Tablet) -------- */
@@ -290,11 +1203,19 @@ body::before {
     .logo-text h1 {
         font-size: 0.7rem;
     }
+    .badge-pro {
+        font-size: 0.4rem;
+        padding: 0.05rem 0.3rem;
+    }
+    .status-tag {
+        font-size: 0.4rem;
+        padding: 0.05rem 0.3rem;
+    }
     .canvas-panel {
-        min-height: 15vh;
+        min-height: 80px;
     }
     .controls-panel {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
         gap: 0.2rem;
     }
     .card {
@@ -303,6 +1224,26 @@ body::before {
     .card-title {
         font-size: 0.4rem;
         margin-bottom: 0.05rem;
+    }
+    .slider-header {
+        font-size: 0.35rem;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+        width: 10px;
+        height: 10px;
+    }
+    button {
+        font-size: 0.4rem;
+        padding: 0.05rem 0.2rem;
+        min-height: 18px;
+        min-width: 18px;
+    }
+    button.sci-fi-btn {
+        width: 26px;
+        height: 26px;
+    }
+    button.sci-fi-btn .icon {
+        font-size: 0.8rem;
     }
     #ai-chat-widget {
         height: 40vh;
@@ -314,34 +1255,96 @@ body::before {
     }
 }
 
-/* Magic Overlay (เดิม) + ปรับมือถือ */
-#magic-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999999;
-    animation: magicFadeIn 0.6s ease;
-    pointer-events: none;
+/* -------- Magic Overlay Responsive (เพิ่ม) -------- */
+@media (max-width: 480px) {
+    .magic-circle { width: 120px; height: 120px; }
+    .magic-wand { font-size: 40px; }
+    .magic-text { font-size: 1rem; }
 }
-/* ... (Magic Overlay CSS เหมือนเดิม) ... */
+
+@media (max-width: 480px) {
+    .logo-text p {
+        display: none;
+    }
+    .badge-pro span:not(.icon) {
+        display: none;
+    }
+    .header-badges .status-tag span:not(.dot) {
+        display: none;
+    }
+    .floating-zoom .zoom-label {
+        display: none;
+    }
+    .btn-group {
+        flex-direction: column;
+    }
+    .btn-group button {
+        width: 100%;
+        flex: 1 1 auto;
+    }
+    .voice-status {
+        width: 100%;
+        justify-content: center;
+    }
+}
 
 /* ============================================================
-   prefers-reduced-motion
+   จัดการกรณีจอแคบมาก (แนวนอน) - ปรับให้กระชับ
    ============================================================ */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
+@media (max-width: 600px) and (orientation: landscape) {
+    .app-header {
+        flex-wrap: nowrap;
+        padding: 0.1rem 0.4rem;
+    }
+    .logo-text p {
+        display: none;
+    }
+    .logo-icon {
+        font-size: 1rem;
+    }
+    .logo-text h1 {
+        font-size: 0.7rem;
+    }
+    .badge-pro {
+        font-size: 0.4rem;
+        padding: 0.05rem 0.3rem;
+    }
+    .status-tag {
+        font-size: 0.4rem;
+        padding: 0.05rem 0.3rem;
+    }
+    .canvas-panel {
+        min-height: 80px;
+    }
+    .controls-panel {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 0.2rem;
+    }
+    .card {
+        padding: 0.1rem 0.2rem;
+    }
+    .card-title {
+        font-size: 0.4rem;
+        margin-bottom: 0.05rem;
+    }
+    .slider-header {
+        font-size: 0.35rem;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+        width: 10px;
+        height: 10px;
+    }
+    button {
+        font-size: 0.4rem;
+        padding: 0.05rem 0.2rem;
+        min-height: 18px;
+        min-width: 18px;
+    }
+    button.sci-fi-btn {
+        width: 26px;
+        height: 26px;
+    }
+    button.sci-fi-btn .icon {
+        font-size: 0.8rem;
     }
 }
