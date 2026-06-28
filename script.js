@@ -1,7 +1,6 @@
 // ============================================================
 // script.js - PixelForge เวอร์ชันมือถือ
 // ปรับปรุง: UI Mobile, Touch, Web Worker, OffscreenCanvas, Cache
-// เพิ่ม: แอนิเมชั่นเวทมนตร์ลบพื้นหลัง (Magic Overlay)
 // รวมระบบ Cleanup และเชื่อมต่อกับ Extra (ถ้ามี)
 // ============================================================
 (function() {
@@ -80,152 +79,6 @@
     // --- Constants ---
     const MAX_IMAGE_SIZE = 1200;
     const WORKER_URL = createWorkerBlob();
-
-    // ============================================================
-    // 0. Magic Overlay (เวทมนตร์ลบพื้นหลัง)
-    // ============================================================
-    function injectMagicStyles() {
-        if (document.getElementById('magic-styles')) return;
-        const style = document.createElement('style');
-        style.id = 'magic-styles';
-        style.textContent = `
-            #magic-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.7);
-                backdrop-filter: blur(8px);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 999999;
-                animation: magicFadeIn 0.6s ease;
-                pointer-events: none;
-            }
-            @keyframes magicFadeIn {
-                from { opacity: 0; transform: scale(1.1); }
-                to { opacity: 1; transform: scale(1); }
-            }
-            .magic-container {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 20px;
-                text-align: center;
-            }
-            .magic-circle {
-                position: relative;
-                width: 180px;
-                height: 180px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .magic-ring {
-                position: absolute;
-                border-radius: 50%;
-                border: 3px solid transparent;
-                box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
-                animation: ringSpin 2s linear infinite;
-            }
-            .ring1 {
-                width: 100%;
-                height: 100%;
-                border-top: 4px solid #00f3ff;
-                border-right: 4px solid #b026ff;
-                animation-duration: 1.8s;
-            }
-            .ring2 {
-                width: 75%;
-                height: 75%;
-                border-bottom: 4px solid #ff00e5;
-                border-left: 4px solid #ffe600;
-                animation-duration: 2.5s;
-                animation-direction: reverse;
-            }
-            .ring3 {
-                width: 50%;
-                height: 50%;
-                border-top: 3px solid #ffe600;
-                border-right: 3px solid #ff00e5;
-                animation-duration: 1.2s;
-                opacity: 0.7;
-            }
-            @keyframes ringSpin {
-                to { transform: rotate(360deg); }
-            }
-            .magic-wand {
-                font-size: 56px;
-                z-index: 2;
-                filter: drop-shadow(0 0 30px rgba(0, 243, 255, 0.8));
-                animation: wandFloat 1.8s ease-in-out infinite;
-                transform-origin: bottom center;
-            }
-            @keyframes wandFloat {
-                0%, 100% { transform: translateY(0) rotate(-5deg); }
-                50% { transform: translateY(-25px) rotate(10deg); }
-            }
-            .magic-text {
-                color: #e2e8f0;
-                font-size: clamp(1.2rem, 3vw, 1.8rem);
-                font-weight: 600;
-                letter-spacing: 4px;
-                text-shadow: 0 0 30px rgba(0, 243, 255, 0.6), 0 0 60px rgba(176, 38, 255, 0.3);
-                animation: textPulse 1.5s ease-in-out infinite;
-                font-family: 'Inter', 'Rajdhani', sans-serif;
-            }
-            @keyframes textPulse {
-                0%, 100% { opacity: 1; transform: scale(1); }
-                50% { opacity: 0.7; transform: scale(1.02); }
-            }
-            .magic-sparkles {
-                font-size: clamp(1rem, 2vw, 1.4rem);
-                color: #ffe600;
-                letter-spacing: 12px;
-                animation: sparkleTwinkle 1.2s ease-in-out infinite alternate;
-            }
-            @keyframes sparkleTwinkle {
-                0% { opacity: 0.3; transform: scale(0.8); }
-                100% { opacity: 1; transform: scale(1.2); }
-            }
-            @media (max-width: 480px) {
-                .magic-circle { width: 120px; height: 120px; }
-                .magic-wand { font-size: 40px; }
-                .magic-text { font-size: 1rem; }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    function showMagicOverlay() {
-        if (document.getElementById('magic-overlay')) return;
-        const overlay = document.createElement('div');
-        overlay.id = 'magic-overlay';
-        overlay.innerHTML = `
-            <div class="magic-container">
-                <div class="magic-circle">
-                    <div class="magic-ring ring1"></div>
-                    <div class="magic-ring ring2"></div>
-                    <div class="magic-ring ring3"></div>
-                    <div class="magic-wand">🪄</div>
-                </div>
-                <div class="magic-text">✨ กำลังลบพื้นหลังให้ครับเจ้านาย... ✨</div>
-                <div class="magic-sparkles">✦ ✧ ★ ✦ ✧</div>
-            </div>
-        `;
-        document.body.appendChild(overlay);
-    }
-
-    function hideMagicOverlay() {
-        const overlay = document.getElementById('magic-overlay');
-        if (overlay) {
-            overlay.style.opacity = '0';
-            overlay.style.transition = 'opacity 0.5s ease';
-            setTimeout(() => overlay.remove(), 500);
-        }
-    }
 
     // ============================================================
     // 1. สร้าง Web Worker (Inline Blob)
@@ -582,7 +435,7 @@
     }
 
     // ============================================================
-    // 6. ลบพื้นหลัง (ปรับขนาดก่อนส่งเข้าโมเดล) + Magic Overlay
+    // 6. ลบพื้นหลัง (ปรับขนาดก่อนส่งเข้าโมเดล)
     // ============================================================
     removeBgBtn.addEventListener('click', async function() {
         if (!originalImageData) {
@@ -592,9 +445,6 @@
         this.disabled = true;
         this.textContent = '⏳ กำลังโหลดโมเดล...';
         progressFill.style.width = '0%';
-
-        // ✨ เริ่มแอนิเมชั่นเวทมนตร์
-        showMagicOverlay();
 
         try {
             const tempCanvas = document.createElement('canvas');
@@ -614,8 +464,8 @@
             const srcCtx = srcCanvas.getContext('2d');
             srcCtx.putImageData(originalImageData, 0, 0);
             tempCtx.drawImage(srcCanvas, 0, 0, w, h);
+            const resizedData = tempCtx.getImageData(0, 0, w, h);
 
-            // โหลดโมดูลลบพื้นหลัง
             const module = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal/+esm');
             const removeFn = module.removeBackground;
 
@@ -668,8 +518,6 @@
             progressFill.style.width = '0%';
             this.textContent = '✨ ลบพื้นหลัง';
         } finally {
-            // ✨ ซ่อนแอนิเมชั่นเมื่อเสร็จ (ทั้งสำเร็จหรือผิดพลาด)
-            hideMagicOverlay();
             this.disabled = false;
         }
     });
@@ -908,6 +756,7 @@
     function cleanupResources() {
         console.log('[PixelForge] Cleaning up resources...');
 
+        // หยุด Web Worker
         if (worker) {
             try {
                 worker.terminate();
@@ -915,25 +764,30 @@
             } catch (e) {}
         }
 
+        // ยกเลิก animation frame
         if (renderTimeout) {
             cancelAnimationFrame(renderTimeout);
             renderTimeout = null;
         }
 
+        // ล้าง blob URL ของ Worker
         if (WORKER_URL) {
             try {
                 URL.revokeObjectURL(WORKER_URL);
             } catch (e) {}
         }
 
+        // เรียก Extra.cleanupGarbage() ถ้ามี
         if (window.Extra && typeof window.Extra.cleanupGarbage === 'function') {
             window.Extra.cleanupGarbage();
         }
 
+        // ลบ ImageData ขนาดใหญ่
         originalImageData = null;
         currentImageData = null;
         originalFile = null;
 
+        // ล้างแคชภาพใน DOM (ถ้ามี)
         const imgs = document.querySelectorAll('img');
         imgs.forEach(img => {
             if (img.src && img.src.startsWith('blob:')) {
@@ -941,20 +795,15 @@
             }
         });
 
-        // ลบ Magic Overlay ถ้ายังค้าง
-        hideMagicOverlay();
-
         console.log('[PixelForge] Cleanup complete.');
     }
 
+    // เรียก cleanup เมื่อปิดหน้า
     window.addEventListener('beforeunload', cleanupResources);
 
     // ============================================================
     // 11. เริ่มต้น
     // ============================================================
-    // Inject Magic Styles
-    injectMagicStyles();
-
     loadDefaultImage();
     updateCanvasTransform();
 
@@ -967,5 +816,5 @@
         updateCanvasTransform();
     });
 
-    console.log('🚀 PixelForge Mobile Ready (with Magic Overlay)');
+    console.log('🚀 PixelForge Mobile Ready (with cleanup integration)');
 })();
